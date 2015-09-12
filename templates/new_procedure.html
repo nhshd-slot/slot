@@ -5,9 +5,11 @@
 {% block content %}
 <div class="container">
     <div class="page-title"><h1>Add Learning Opportunity</h1></div>
-    <div class="nav-buttons"><button class="btn btn-info btn-lg">Back To List</button></div>
-    <div class="opportunity-input-form form-group">
-        <form>
+    <div class="nav-buttons">
+        <a href="/" class="btn btn btn-danger" role="button">Cancel (Back To List)</a>
+    </div>
+    <div class="opportunity-input-form">
+        <form class="form" action="/opportunity" method="post">
             <div class="form-group">
                 <label for="doctor">Doctor Offering Supervision</label>
                 <select class="form-control" id="doctor">
@@ -34,14 +36,14 @@
                 </select>
             </div>
             <div class="form-group">
-                <label for="timelimit">Time Limit</label>
-                <select class="form-control" id="timelimit">
+                <label for="duration">Time Limit</label>
+                <select class="form-control" id="duration">
                     <option value="20">Within 20 mins</option>
                     <option value="40">Within 40 mins</option>
                     <option value="60">Within 60 mins</option>
                 </select>
             </div>
-            <button type="submit" class="btn btn-primary">Add Opportunity</button>
+            <button type="submit" class="btn btn-primary btn-lg">Add Opportunity</button>
         </form>
     </div>
 

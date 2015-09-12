@@ -33,7 +33,7 @@ def get_all_opportunities():
 ## Call this function with a new opportunity:
 # db.add_opportunity({
 #        "doctor": "Dr Thing",
-#        "opportunity":"do thing",
+#        "procedure":"do thing",
 #        "location": "the ward",
 #        "duration": 20
 #    })
@@ -48,7 +48,7 @@ def add_opportunity(op):
     now = to_timestamp(datetime.datetime.now())
     vs.append(op["doctor"])
     vs.append(now)
-    vs.append(op["opportunity"])
+    vs.append(op["procedure"])
     vs.append(now + int(op["duration"]))
     vs.append(op["location"])
     w.append_row(vs)
