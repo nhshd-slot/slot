@@ -1,7 +1,7 @@
 import flask
+import config
 
 app = flask.Flask(__name__)
-print(str.format("Debug Mode is: {0}", app.debug))
 
 
 @app.route('/')
@@ -25,6 +25,7 @@ def receive_sms():
                      str(flask.request.form['Body'])))
     return '<Response></Response>'
 
-
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.debug = config.debug_mode
+    print(str.format("Debug Mode is: {0}", app.debug))
+    app.run()
