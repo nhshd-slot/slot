@@ -5,15 +5,24 @@ app = flask.Flask(__name__)
 
 
 @app.route('/')
-def index():
+@app.route('/dashboard')
+def render_dashboard():
     return flask.render_template('dashboard.html')
 
 
 @app.route('/new')
-def new():
+def render_new_procedure_form():
     return flask.render_template('new_procedure.html')
 
 
+# Endpoint for new opportunity form submission
+@app.route('/opportunity', methods=['POST'])
+def new_opportunity():
+    print(str.format(""))
+    return flask.redirect(flask.url_for('new', code=201))
+
+
+# Endpoint for receiving SMS messages from Twilio
 @app.route('/sms', methods=['POST'])
 def receive_sms():
     print(str.format("Received SMS: \n"
@@ -24,6 +33,7 @@ def receive_sms():
                      str(flask.request.form['From']),
                      str(flask.request.form['Body'])))
     return '<Response></Response>'
+
 
 if __name__ == '__main__':
     app.debug = config.debug_mode
