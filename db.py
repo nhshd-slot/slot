@@ -37,6 +37,8 @@ def get_all_opportunities():
 #        "location": "the ward",
 #        "duration": 20
 #    })
+#
+# Returns the GUID of the created opportunity
 def add_opportunity(op):
     c = Creds(config.google_access_token)
     gs = gspread.authorize(c)
@@ -52,3 +54,5 @@ def add_opportunity(op):
     vs.append(now + int(op["duration"]))
     vs.append(op["location"])
     w.append_row(vs)
+
+    return vs[0]
