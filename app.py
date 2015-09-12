@@ -26,13 +26,13 @@ def index():
     return flask.render_template('dashboard.html', ops = ops)
 
 
-@app.route('/new')
+@app.route('/new', methods=['GET'])
 def render_new_procedure_form():
     return flask.render_template('new_procedure.html')
 
 
 # Endpoint for new opportunity form submission
-@app.route('/opportunity', methods=['POST'])
+@app.route('/new', methods=['POST'])
 def new_opportunity():
     opportunity_doctor = flask.request.form['doctor']
     opportunity_procedure = flask.request.form['procedure']
