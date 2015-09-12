@@ -3,8 +3,51 @@
 {% block title %}Index{% endblock %}
 
 {% block content %}
-    <h1>Index</h1>
-    <p class="important">
-      Welcome to my awesome homepage. This is the dashboard.
-    </p>
+<div class="container">
+    <div class="page-title"><h1>Existing Learning Opportunities</h1></div>
+    <div class="nav-buttons"><button class="btn btn-info btn-lg">Add Opportunity</button></div>
+    <div class="opportunity-table">
+        <table class="table">
+            <tr>
+                <th>Time Requested</th>
+                <th>Requested By</th>
+                <th>Learning Opportunity</th>
+                <th>Expiry Time</th>
+                <th>Location</th>
+                <th>Status</th>
+                <th>Accepted By</th>
+            </tr>
+            <!-- Style for released but unrequested job - use class .info -->
+            <tr class="info">
+                <td>13/09/2015 14:04</td>
+                <td>Dr J Bloggs</td>
+                <td>Urethral Catheter</td>
+                <td>45m</td>
+                <td>Ward 107</td>
+                <td>Offered</td>
+                <td></td>
+            </tr>
+            <!-- Style for accepted job - use class .success -->
+            <tr class="success">
+                <td>13/09/2015 13:30</td>
+                <td>Dr S Cusack</td>
+                <td>Intravenous Cannnula</td>
+                <td>16m</td>
+                <td>Ward 107</td>
+                <td>Accepted</td>
+                <td>Terry Wogan</td>
+            </tr>
+            <!-- Style for expired job - use class .acitve - it looks grey -->
+            <tr class="active">
+                <td>13/09/2015 11:04</td>
+                <td>Dr H Morgan</td>
+                <td>Venepuncture</td>
+                <td>Time Elapsed</td>
+                <td>Ward 107</td>
+                <td>Expired</td>
+                <td></td>
+            </tr>
+        </table>
+    </div>
+</div>
 {% endblock %}
