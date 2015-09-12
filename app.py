@@ -9,16 +9,24 @@ app = flask.Flask(__name__)
 def index():
     ops = db.get_all_opportunities()
 
+    for op in ops:
+        if op["status"] == "Accepted":
+            op["class"] = "success"
+        elif op["status"] == "Offered":
+            op["class"] = "info"
+        elif op["status"] == "Expired":
+            op["class"] = "active"
+
     return flask.render_template('dashboard.html', ops = ops)
 
 @app.route('/new')
 def render_new_procedure_form():
-    db.add_opportunity({
-        "doctor": "Dr Ian",
-        "opportunity":"do thing",
-        "location": "the ward",
-        "duration": 20
-    })
+    #db.add_opportunity({
+    #    "doctor": "Dr Ian",
+    #    "opportunity":"do thing",
+    #    "location": "the ward",
+    #    "duration": 20
+    #})
     return flask.render_template('new_procedure.html')
 
 

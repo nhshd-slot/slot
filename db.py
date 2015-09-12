@@ -1,6 +1,7 @@
 import gspread
 import config
 import datetime
+import uuid
 
 class Creds(object):
 
@@ -42,7 +43,7 @@ def add_opportunity(op):
     s = gs.open_by_key(config.google_sheet_key)
     w = s.worksheet("log")
 
-    vs = []
+    vs = [uuid.uuid4()]
 
     now = to_timestamp(datetime.datetime.now())
     vs.append(op["doctor"])
