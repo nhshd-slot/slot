@@ -65,4 +65,7 @@ def receive_sms():
 if __name__ == '__main__':
     app.debug = config.debug_mode
     print(str.format("Debug Mode is: {0}", app.debug))
-    app.run()
+    app.run(
+        host="0.0.0.0",
+        port=int("5000")
+    )
