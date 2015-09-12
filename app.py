@@ -1,17 +1,24 @@
 import flask
 import config
+import db
 
 app = flask.Flask(__name__)
 
-
 @app.route('/')
 @app.route('/dashboard')
-def render_dashboard():
-    return flask.render_template('dashboard.html')
+def index():
+    ops = db.get_all_opportunities()
 
+    return flask.render_template('dashboard.html', ops = ops)
 
 @app.route('/new')
 def render_new_procedure_form():
+    db.add_opportunity({
+        "doctor": "Dr Ian",
+        "opportunity":"do thing",
+        "location": "the ward",
+        "duration": 20
+    })
     return flask.render_template('new_procedure.html')
 
 

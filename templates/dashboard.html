@@ -47,6 +47,18 @@
                 <td>Expired</td>
                 <td></td>
             </tr>
+            {% for op in ops %}
+                <tr>
+                    <td>{{op["time_sent"]}}</td>
+                    <td>{{op["doctor"]}}</td>
+                    <td>{{op["opportunity"]}}</td>
+                    <td>{{op["remaining_mins"]}}</td>
+                    <td>{{op["location"]}}</td>
+                    <td>{{op["status"]}}</td>
+                    <td>{{op["student"]}}</td>
+                </tr>
+            {% endfor %}
+
         </table>
     </div>
 </div>
