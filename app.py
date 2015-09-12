@@ -21,7 +21,7 @@ def index():
 def render_new_procedure_form():
     db.add_opportunity({
         "doctor": "Dr Ian",
-        "opportunity":"do thing",
+        "opportunity": "do thing",
         "location": "the ward",
         "duration": 20
     })
