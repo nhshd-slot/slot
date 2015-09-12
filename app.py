@@ -18,7 +18,9 @@ def render_new_procedure_form():
 # Endpoint for new opportunity form submission
 @app.route('/opportunity', methods=['POST'])
 def new_opportunity():
-    print(str.format(""))
+    print(str.format("Received Form: \n"
+                     "{0}",
+                     flask.request.form['value']))
     return flask.redirect(flask.url_for('new', code=201))
 
 
