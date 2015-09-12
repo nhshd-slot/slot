@@ -1,7 +1,6 @@
 def new_procedure_message(procedure, location, duration, doctor):
     unique_reference = str(1)
-    message = str.format("{0} is available on {1}. Attend the ward in {2} and meet {3} in the junior doctors' office. "
-                         "To accept this opportunity reply with {4}",
+    message = str.format("{0} on {1} ward.\nAttend within {2} mins.\nAsk for {3}.\n\nTo accept reply '{4}'",
                          procedure,
                          location,
                          duration,
