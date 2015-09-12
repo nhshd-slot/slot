@@ -4,6 +4,7 @@ import flask
 # Local Modules
 import config
 import db
+import messaging
 
 app = flask.Flask(__name__)
 
@@ -46,6 +47,10 @@ def new_opportunity():
     })
 
     db.add_opportunity(opportunity)
+    messaging.broadcast_procedure(opportunity_procedure,
+                                  opportunity_location,
+                                  opportunity_duration,
+                                  opportunity_doctor)
 
     print(flask.json.dumps(opportunity))
     return flask.redirect('/dashboard', code=302)
