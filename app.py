@@ -1,5 +1,6 @@
 # 3rd Party Modules
 import flask
+import datetime
 
 # Local Modules
 import config
@@ -22,6 +23,8 @@ def index():
             op["class"] = "info"
         elif op["status"] == "Expired":
             op["class"] = "active"
+
+        op["remaining_mins"] = int(int(op["expiry_time"] - db.to_timestamp(datetime.datetime.now())) / 60)
 
     return flask.render_template('dashboard.html', ops = ops)
 

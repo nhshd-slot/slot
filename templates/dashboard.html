@@ -51,12 +51,18 @@
                 <td>Expired</td>
                 <td></td>
             </tr>
-            {% for op in ops %}
+            {% for op in ops|sort(attribute='time_sent', reverse=True) %}
                 <tr class="{{ op['class']}}">
-                    <td>{{op["time_sent"]}}</td>
+                    <td>{{op["time"]}}</td>
                     <td>{{op["doctor"]}}</td>
                     <td>{{op["procedure"]}}</td>
-                    <td>{{op["remaining_mins"]}}</td>
+                    <td>
+                        {% if op["remaining_mins"] > 0 %}
+                            {{op["remaining_mins"]}}
+                        {% else %}
+                            Time elapsed
+                        {% endif %}
+                    </td>
                     <td>{{op["location"]}}</td>
                     <td>{{op["status"]}}</td>
                     <td>{{op["student"]}}</td>

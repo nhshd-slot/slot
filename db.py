@@ -38,6 +38,8 @@ def get_all_opportunities():
             r["status"] = "Expired"
         else:
             r["status"] = "Offered"
+
+        r["time"] = datetime.datetime.fromtimestamp(r["time_sent"])
     return rs
 
 
@@ -62,7 +64,7 @@ def add_opportunity(op):
     vs.append(op["doctor"])
     vs.append(now)
     vs.append(op["procedure"])
-    vs.append(now + int(op["duration"]))
+    vs.append(int(now + int(op["duration"]) * 60))
     vs.append(op["location"])
     w.append_row(vs)
 
