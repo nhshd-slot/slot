@@ -9,7 +9,7 @@ from oauth2client.file import Storage
 from oauth2client.client import Credentials
 
 def refresh_access_token():
-    creds.refresh(httplib2.Http())
+    creds._do_refresh_request(httplib2.Http().request)
 
 print "Loading DB..."
 
@@ -56,7 +56,7 @@ def get_all_opportunities():
             r["status"] = "Not Attended"
         elif r["student"]:
             r["status"] = "Accepted"
-        elif to_timestamp(datetime.datetime.now()) > int(r["expiry_time"]):
+        elif to_timestamp(datetime.datetime.utcnow()) > int(r["expiry_time"]):
             r["status"] = "Expired"
         else:
             r["status"] = "Offered"
@@ -79,7 +79,7 @@ def add_opportunity(op):
 
     vs = [uuid.uuid4()]
 
-    now = to_timestamp(datetime.datetime.now())
+    now = to_timestamp(datetime.datetime.utcnow())
     vs.append(op["doctor"])
     vs.append(now)
     vs.append(op["procedure"])
@@ -117,7 +117,7 @@ def update_opportunity(guid, student_name):
         return False
 
     log_worksheet.update_cell(i, 7, student_name)
-    log_worksheet.update_cell(i, 8, to_timestamp(datetime.datetime.now()))
+    log_worksheet.update_cell(i, 8, to_timestamp(datetime.datetime.utcnow()))
 
     return True
 

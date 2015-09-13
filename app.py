@@ -29,7 +29,7 @@ def index():
         elif op["status"] == "Not Attended":
             op["class"] = "active"
 
-        op["remaining_mins"] = int(int(op["expiry_time"] - db.to_timestamp(datetime.datetime.now())) / 60)
+        op["remaining_mins"] = int(int(op["expiry_time"] - db.to_timestamp(datetime.datetime.utcnow())) / 60)
 
     return flask.render_template('dashboard.html', ops = ops)
 
