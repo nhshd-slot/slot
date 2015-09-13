@@ -72,3 +72,21 @@ def add_opportunity(op):
     log_worksheet.append_row(vs)
 
     return vs[0]
+
+def update_opportunity(guid, student_name):
+    refresh_access_token()
+
+    ops = get_all_opportunities()
+
+    i = 1
+    x = None
+    for op in ops:
+        i+=1
+        if op["id"] == guid:
+            x = op
+            break
+
+    print "Found op"
+    print x
+
+    log_worksheet.update_cell(i, 7, student_name)
