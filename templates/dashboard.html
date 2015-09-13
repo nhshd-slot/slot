@@ -21,36 +21,36 @@
                 <th>Status</th>
                 <th>Accepted By</th>
             </tr>
-            <!-- Style for released but unrequested job - use class .info -->
-            <tr class="info">
-                <td>13/09/2015 14:04</td>
-                <td>Dr J Bloggs</td>
-                <td>Urethral Catheter</td>
-                <td>45m</td>
-                <td>Ward 107</td>
-                <td>Offered</td>
-                <td></td>
-            </tr>
-            <!-- Style for accepted job - use class .success -->
-            <tr class="success">
-                <td>13/09/2015 13:30</td>
-                <td>Dr S Cusack</td>
-                <td>Intravenous Cannnula</td>
-                <td>16m</td>
-                <td>Ward 107</td>
-                <td>Accepted</td>
-                <td>Terry Wogan</td>
-            </tr>
-            <!-- Style for expired job - use class .active - it looks grey -->
-            <tr class="active">
-                <td>13/09/2015 11:04</td>
-                <td>Dr H Morgan</td>
-                <td>Venepuncture</td>
-                <td>-</td>
-                <td>Ward 107</td>
-                <td>Expired</td>
-                <td></td>
-            </tr>
+            <!--&lt;!&ndash; Style for released but unrequested job - use class .info &ndash;&gt;-->
+            <!--<tr class="info">-->
+                <!--<td>13/09/2015 14:04</td>-->
+                <!--<td>Dr J Bloggs</td>-->
+                <!--<td>Urethral Catheter</td>-->
+                <!--<td>45m</td>-->
+                <!--<td>Ward 107</td>-->
+                <!--<td>Offered</td>-->
+                <!--<td></td>-->
+            <!--</tr>-->
+            <!--&lt;!&ndash; Style for accepted job - use class .success &ndash;&gt;-->
+            <!--<tr class="success">-->
+                <!--<td>13/09/2015 13:30</td>-->
+                <!--<td>Dr S Cusack</td>-->
+                <!--<td>Intravenous Cannnula</td>-->
+                <!--<td>16m</td>-->
+                <!--<td>Ward 107</td>-->
+                <!--<td>Accepted</td>-->
+                <!--<td>Terry Wogan</td>-->
+            <!--</tr>-->
+            <!--&lt;!&ndash; Style for expired job - use class .active - it looks grey &ndash;&gt;-->
+            <!--<tr class="active">-->
+                <!--<td>13/09/2015 11:04</td>-->
+                <!--<td>Dr H Morgan</td>-->
+                <!--<td>Venepuncture</td>-->
+                <!--<td>-</td>-->
+                <!--<td>Ward 107</td>-->
+                <!--<td>Expired</td>-->
+                <!--<td></td>-->
+            <!--</tr>-->
             {% for op in ops|sort(attribute='time_sent', reverse=True) %}
                 <tr class="{{ op['class']}}">
                     <td>{{op["time"]}}</td>
