@@ -92,6 +92,7 @@ def receive_sms():
 def complete_procedure():
     completed_id = flask.request.form['id']
     print(str(completed_id))
+    db.complete_opportunity(completed_id)
     return flask.redirect('/dashboard', code=302)
 
 
