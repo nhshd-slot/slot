@@ -3,6 +3,7 @@ import config
 import datetime
 import uuid
 import httplib2
+import os
 
 from oauth2client.file import Storage
 
@@ -12,7 +13,7 @@ def refresh_access_token():
 
 print "Loading DB..."
 
-storage = Storage('credentials-nhshd.dat')
+storage = os.environ.get("GOOGLE_CREDS", Storage('credentials-nhshd.dat'))
 creds = storage.get()
 refresh_access_token()
 gs = gspread.authorize(creds)
