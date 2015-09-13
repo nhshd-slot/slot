@@ -1,6 +1,7 @@
 # 3rd Party Modules
 import flask
 import datetime
+import os
 
 # Local Modules
 import config
@@ -87,8 +88,8 @@ def receive_sms():
 
 if __name__ == '__main__':
     app.debug = config.debug_mode
+    app.port = os.environ.get("PORT", 5000)
     print(str.format("Debug Mode is: {0}", app.debug))
     app.run(
-        host="0.0.0.0",
-        port=int("5000")
+        host="0.0.0.0"
     )
