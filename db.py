@@ -31,6 +31,7 @@ procedures_worksheet = None
 timeframes_worksheet = None
 locations_worksheet = None
 doctors_worksheet = None
+sms_log_worksheet = None
 
 def reconnect():
     global log_worksheet, student_worksheet, procedures_worksheet, timeframes_worksheet, locations_worksheet, doctors_worksheet
@@ -42,6 +43,7 @@ def reconnect():
     timeframes_worksheet = sheet.worksheet("timeframes")
     locations_worksheet = sheet.worksheet("locations")
     doctors_worksheet = sheet.worksheet("doctors")
+    sms_log_worksheet = sheet.worksheet("sms_log")
 
 reconnect()
 print "Complete"
@@ -212,5 +214,21 @@ def get_doctors():
 
     def f():
         return [d['doctor'] for d in doctors_worksheet.get_all_records()]
+
+    return do_with_retry(f)
+
+def log_sms(from_number, to_number, body):
+    refresh_access_token()
+
+    def f():
+        vs = []
+
+        now = to_timestamp(datetime.datetime.utcnow())
+        vs.append(now)
+        vs.append(from_number)
+        vs.append(to_number)
+        vs.append(body)
+        sms_log_worksheet.append_row(vs)
+
 
     return do_with_retry(f)
