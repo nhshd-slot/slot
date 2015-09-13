@@ -16,7 +16,7 @@
                 <th>Time Requested</th>
                 <th>Requested By</th>
                 <th>Learning Opportunity</th>
-                <th>Time Left</th>
+                <th>Mins Left</th>
                 <th>Location</th>
                 <th>Status</th>
                 <th>Accepted By</th>
@@ -70,7 +70,7 @@
                     <td>{% if op["status"] == "Accepted" %}
                         <form class="form" action="/complete" method="post">
                             <input type="hidden" value="{{op['id']}}" name="id" id="id">
-                            <button type="submit" class="btn btn-primary btn-lg">Complete</button>
+                            <button type="submit" class="btn btn-primary btn-xs">Complete</button>
                         </form>
                         {% endif %}
                     </td>
