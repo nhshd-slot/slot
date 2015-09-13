@@ -69,9 +69,9 @@ def receive_sms():
                message=str(flask.request.form['Body']))
 
     print(str.format("Received SMS: \n"
-                     "To: {0}\n"
-                     "From: {1}\n"
-                     "Body: {2}\n",
+                     "Service Number: {0}\n"
+                     "Mobile: {1}\n"
+                     "Message: {2}\n",
                      sms['service_number'],
                      sms['mobile'],
                      sms['message']))
