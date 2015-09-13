@@ -109,8 +109,9 @@ def complete_procedure():
 
 if __name__ == '__main__':
     app.debug = config.debug_mode
-    app.port = os.environ.get("PORT", 5000)
+    port = os.environ.get("PORT", 5000)
     print(str.format("Debug Mode is: {0}", app.debug))
     app.run(
-        host="0.0.0.0"
+        host="0.0.0.0",
+        port = port
     )
