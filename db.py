@@ -43,8 +43,10 @@ def get_all_opportunities():
 
 
     for r in rs:
-        if r["outcome"] == "COMPLETED":
-            r["status"] = "Completed"
+        if r["outcome"] == "ATTENDED":
+            r["status"] = "Attended"
+        elif r["outcome"] == "NOT_ATTENDED":
+            r["status"] = "Not Attended"
         elif r["student"]:
             r["status"] = "Accepted"
         elif to_timestamp(datetime.datetime.now()) > int(r["expiry_time"]):
@@ -113,7 +115,7 @@ def update_opportunity(guid, student_name):
     return True
 
 
-def complete_opportunity(guid):
+def complete_opportunity(guid, attended):
     refresh_access_token()
 
     ops = get_all_opportunities()
@@ -126,7 +128,10 @@ def complete_opportunity(guid):
             x = op
             break
 
-    log_worksheet.update_cell(i, 9, "COMPLETED")
+    if attended:
+        log_worksheet.update_cell(i, 9, "ATTENDED")
+    else:
+        log_worksheet.update_cell(i, 9, "NOT_ATTENDED")
 
     return True
 
