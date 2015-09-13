@@ -1,11 +1,11 @@
-def new_procedure_message(procedure, location, duration, doctor):
+def new_procedure_message(procedure, location, duration, doctor, message_ref):
     unique_reference = str(1)
     message = str.format("{0} at {1}.\nAttend within {2} mins.\nAsk for {3}.\n\nTo accept reply '{4}'",
                          procedure,
                          location,
                          duration,
                          doctor,
-                         unique_reference)
+                         message_ref)
     print(message)
     return message
 
