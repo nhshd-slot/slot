@@ -1,0 +1,11 @@
+
+twilio_sid = "xxxxx"
+twilio_token = "xxxxx"
+twilio_number = 'xxxxx'
+
+google_client_id = 'xxxxx'
+google_client_secret = 'xxxxx'
+
+google_sheet_key = 'xxxxx'
+
+debug_mode = True
