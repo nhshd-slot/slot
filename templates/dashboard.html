@@ -20,6 +20,7 @@
                 <th>Location</th>
                 <th>Status</th>
                 <th>Accepted By</th>
+                <th></th>
             </tr>
             <!--&lt;!&ndash; Style for released but unrequested job - use class .info &ndash;&gt;-->
             <!--<tr class="info">-->
@@ -66,6 +67,13 @@
                     <td>{{op["location"]}}</td>
                     <td>{{op["status"]}}</td>
                     <td>{{op["student"]}}</td>
+                    <td>{% if op["status"] == "Accepted" %}
+                        <form class="form" action="/complete" method="post">
+                            <input type="hidden" value="{{op['id']}}" name="id" id="id">
+                            <button type="submit" class="btn btn-primary btn-lg">Complete</button>
+                        </form>
+                        {% endif %}
+                    </td>
                 </tr>
             {% endfor %}
 
