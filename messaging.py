@@ -43,3 +43,21 @@ def broadcast_procedure(procedure, location, duration, doctor, ref_id):
         print("Sending SMS")
         print(recipient)
         sms_twilio.send_sms(recipient['phone_number'], config.twilio_number, message)
+
+
+def request_procedure(mobile, friendly_ref):
+    try:
+        opportunity = [d for d in list_of_opportunities if d['ref'] == friendly_ref][0]
+        opportunity_id = opportunity['id']
+        print(str.format("Opportunity ID is {0}", opportunity_id))
+        opportunity_still_available = True
+
+        # TODO: Update opportunity here
+        # allocate_opportunity(id, student_name)
+
+        # TODO: Remove opportunity from list
+
+    except IndexError as e:
+        print(e)
+        opportunity_still_available = False
+        print("Opportunity no longer available")
