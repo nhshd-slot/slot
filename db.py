@@ -77,6 +77,16 @@ def add_opportunity(op):
 
     return vs[0]
 
+def get_opportunity(guid):
+    refresh_access_token()
+
+    ops = get_all_opportunities()
+
+    for op in ops:
+        if op["id"] == guid:
+            return op
+
+
 
 def update_opportunity(guid, student_name):
     refresh_access_token()
