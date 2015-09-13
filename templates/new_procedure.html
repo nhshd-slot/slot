@@ -9,27 +9,27 @@
     </div>
     <div class="page-title"><h2>Add Learning Opportunity</h2></div>
     <div class="opportunity-input-form">
-        <form class="form" action="/opportunity" method="post">
+        <form class="form" action="/new" method="post">
             <div class="form-group">
                 <label for="doctor">Doctor Offering Supervision</label>
-                <select class="form-control" id="doctor">
-                    <option value="jporter">Dr J Porter</option>
-                    <option value="scusack">Dr S Cusack</option>
-                    <option value="twilson">Dr T Wilson</option>
-                    <option value="sbarr">Dr S Barr</option>
+                <select class="form-control" id="doctor" name="doctor">
+                    <option value="Dr J Porter">Dr J Porter</option>
+                    <option value="Dr S Cusack">Dr S Cusack</option>
+                    <option value="Dr T Wilson">Dr T Wilson</option>
+                    <option value="Dr S Barr">Dr S Barr</option>
                 </select>
             </div>
             <div class="form-group">
                 <label for="procedure">Select Procedure</label>
-                <select class="form-control" id="procedure">
-                    <option value="venepuncture">Venepuncture</option>
-                    <option value="cannula">Venous Cannula</option>
-                    <option value="catheter">Urethral Catheter</option>
+                <select class="form-control" id="procedure" name="procedure">
+                    <option value="Venepuncture">Venepuncture</option>
+                    <option value="Venous Cannula">Venous Cannula</option>
+                    <option value="Urethral Catheter">Urethral Catheter</option>
                 </select>
             </div>
             <div class="form-group">
                 <label for="location">Location</label>
-                <select class="form-control" id="location">
+                <select class="form-control" id="location" name="location">
                     <option value="101">Ward 101</option>
                     <option value="102">Ward 102</option>
                     <option value="103">Ward 103</option>
@@ -37,7 +37,7 @@
             </div>
             <div class="form-group">
                 <label for="duration">Time Limit</label>
-                <select class="form-control" id="duration">
+                <select class="form-control" id="duration" name="duration">
                     <option value="20">Within 20 mins</option>
                     <option value="40">Within 40 mins</option>
                     <option value="60">Within 60 mins</option>
@@ -46,5 +46,6 @@
             <button type="submit" class="btn btn-primary btn-lg">Add Opportunity</button>
         </form>
     </div>
+</div>
 
 {% endblock %}
