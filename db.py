@@ -42,7 +42,9 @@ def get_all_opportunities():
 
 
     for r in rs:
-        if r["student"]:
+        if r["outcome"] == "COMPLETED":
+            r["status"] = "Completed"
+        elif r["student"]:
             r["status"] = "Accepted"
         elif to_timestamp(datetime.datetime.now()) > int(r["expiry_time"]):
             r["status"] = "Expired"
@@ -101,9 +103,6 @@ def update_opportunity(guid, student_name):
             x = op
             break
 
-    print "Found opportunity in DB"
-    print x
-
     if x["student"]:
         return False
 
@@ -111,6 +110,24 @@ def update_opportunity(guid, student_name):
     log_worksheet.update_cell(i, 8, to_timestamp(datetime.datetime.now()))
 
     return True
+
+def complete_opportunity(guid):
+    refresh_access_token()
+
+    ops = get_all_opportunities()
+
+    i = 1
+    x = None
+    for op in ops:
+        i += 1
+        if op["id"] == guid:
+            x = op
+            break
+
+    log_worksheet.update_cell(i, 9, "COMPLETED")
+
+    return True
+
 
 def get_procedures():
     refresh_access_token()

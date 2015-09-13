@@ -24,6 +24,8 @@ def index():
             op["class"] = "info"
         elif op["status"] == "Expired":
             op["class"] = "active"
+        elif op["status"] == "Completed":
+            op["class"] = "active"
 
         op["remaining_mins"] = int(int(op["expiry_time"] - db.to_timestamp(datetime.datetime.now())) / 60)
 
