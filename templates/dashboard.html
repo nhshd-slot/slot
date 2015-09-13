@@ -16,7 +16,7 @@
                 <th>Time Requested</th>
                 <th>Requested By</th>
                 <th>Learning Opportunity</th>
-                <th>Expiry Time</th>
+                <th>Time Left</th>
                 <th>Location</th>
                 <th>Status</th>
                 <th>Accepted By</th>
@@ -46,7 +46,7 @@
                 <td>13/09/2015 11:04</td>
                 <td>Dr H Morgan</td>
                 <td>Venepuncture</td>
-                <td>Time Elapsed</td>
+                <td>-</td>
                 <td>Ward 107</td>
                 <td>Expired</td>
                 <td></td>
@@ -60,7 +60,7 @@
                         {% if op["remaining_mins"] > 0 %}
                             {{op["remaining_mins"]}}
                         {% else %}
-                            Time elapsed
+                            -
                         {% endif %}
                     </td>
                     <td>{{op["location"]}}</td>
