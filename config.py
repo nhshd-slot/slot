@@ -1,6 +1,7 @@
 import os
 try:
     from local_config import *
+
 except ImportError:
 
     twilio_sid = os.environ.get('TWILIO_SID', '')
