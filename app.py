@@ -117,7 +117,7 @@ def receive_sms():
 
     messaging.request_procedure(sms['mobile'], sms['message'])
 
-    db.log_sms(sms['mobile'], sms['service_number'], sms['message'])
+    db.log_sms(sms['mobile'], sms['service_number'], sms['message'], 'IN')
 
     return '<Response></Response>'
 

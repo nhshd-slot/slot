@@ -217,7 +217,7 @@ def get_doctors():
 
     return do_with_retry(f)
 
-def log_sms(from_number, to_number, body):
+def log_sms(from_number, to_number, body, direction):
     refresh_access_token()
 
     def f():
@@ -228,6 +228,7 @@ def log_sms(from_number, to_number, body):
         vs.append(from_number)
         vs.append(to_number)
         vs.append(body)
+        vs.append(direction)
         sms_log_worksheet.append_row(vs)
 
 
