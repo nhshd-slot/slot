@@ -49,11 +49,12 @@ def new_opportunity():
         'duration': opportunity_duration
     })
 
-    db.add_opportunity(opportunity)
+    ref_id = db.add_opportunity(opportunity)
     messaging.broadcast_procedure(opportunity_procedure,
                                   opportunity_location,
                                   opportunity_duration,
-                                  opportunity_doctor)
+                                  opportunity_doctor,
+                                  ref_id)
 
     print(flask.json.dumps(opportunity))
     return flask.redirect('/dashboard', code=302)
