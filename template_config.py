@@ -6,5 +6,6 @@ twilio_sid = 'xxxxxxxxx'
 twilio_token = 'xxxxxxxxxx'
 
 # Google Sheets Settings
-google_access_token = 'xxxxxxx'
 google_sheet_key = 'xxxxxxxx'
+google_client_id = 'xxxxxxxxxxxxxxxx'
+google_client_secret = 'xxxxxxxx'
