@@ -1,7 +1,7 @@
 import sms_generator
 import sms_twilio
 import db
-import config
+import datetime
 
 list_of_opportunities = []
 
@@ -43,37 +43,39 @@ def broadcast_procedure(procedure, location, duration, doctor, ref_id):
     for recipient in recipients:
         print("Sending SMS")
         print(recipient)
-        sms_twilio.send_sms(recipient['phone_number'], config.twilio_number, message)
+        sms_twilio.send_sms(recipient['phone_number'], message)
 
 
 def request_procedure(mobile, friendly_ref):
-    print("Requesting procedure")
-    print(str.format("Friendly Ref is {0}", friendly_ref))
-    print(str.format("Mobile is {0}", mobile))
-
     try:
-        print("Looking for opportunity")
         opportunity = [d for d in list_of_opportunities if d['ref'] == int(friendly_ref)][0]
-        print(opportunity)
         opportunity_id = str(opportunity['id'])
-        print(str.format("Opportunity ID is {0}", opportunity_id))
-        opportunity_still_available = True
-
         students = db.get_all_students()
-        print(students)
-        print(str.format("Mobile is {0}", mobile))
         int_mobile = int(mobile)
-        print("Searching for student based on mobile number...")
         student = [d for d in students if d['phone_number'] == int_mobile][0]
-        print(student)
         student_name = student['student']
-        print(str.format("Student name is {0}", student_name))
-        db.update_opportunity(opportunity_id, student_name)
+
+        result = db.update_opportunity(opportunity_id, student_name)
+        this_opportunity = db.get_opportunity(opportunity_id)
+
+        if result is False:
+            sms_twilio.send_sms(mobile, "Sorry - this learning opportunity has been taken by another student. ")
+
+        elif result is True:
+            message = str.format("Attend {0} by {1}.\n\n"
+                                 "Ask for {2} to complete this procedure.\n\n"
+                                 "This learning opportunity has been reserved for you.",
+                                 this_opportunity['location'],
+                                 # TODO: Format the timestamp so that it is just hh:mm
+                                 datetime.datetime.fromtimestamp(this_opportunity['expiry_time']),
+                                 this_opportunity['doctor'])
+
+            sms_twilio.send_sms(mobile, message)
 
     except IndexError as e:
         print(e)
-        opportunity_still_available = False
-        print("Opportunity no longer available")
+        print("Opportunity not found")
+        sms_twilio.send_sms(mobile, "Sorry - this opportunity is not available.")
 
     except Exception as e:
         print(e)
