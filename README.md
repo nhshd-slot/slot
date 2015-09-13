@@ -1,5 +1,4 @@
-# SLOT
-Supervised Learning Opportunities by Text
+# SLOT - Supervised Learning Opportunities by Text
 
 ## What is SLOT?
 Medical students need hands-on experience of carrying out procedures in hospitals, under supervision. For instance, they need to learn how to carry out venepuncture or catheterisation. Opportunities for them to learn occur unpredictably, and currently lots of those opportunities aren’t taken, as there might not be a medical student in the vicinity at the point where a junior doctor is available to train them.  
