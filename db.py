@@ -9,11 +9,11 @@ import os
 from oauth2client.file import Storage
 from oauth2client.client import Credentials
 
+
 def refresh_access_token():
     creds._do_refresh_request(httplib2.Http().request)
 
 print "Loading DB..."
-
 
 if os.environ.get("GOOGLE_CREDS", None):
     print "Loading google credentials from environment"
@@ -33,6 +33,7 @@ locations_worksheet = None
 doctors_worksheet = None
 sms_log_worksheet = None
 
+
 def reconnect():
     global log_worksheet, student_worksheet, procedures_worksheet, timeframes_worksheet, locations_worksheet, doctors_worksheet, sms_log_worksheet
     gs = gspread.authorize(creds)
@@ -48,6 +49,7 @@ def reconnect():
 reconnect()
 print "Complete"
 
+
 def do_with_retry(f):
     try:
         return f()
@@ -55,6 +57,7 @@ def do_with_retry(f):
         print "Got BadStatusLine. Retrying"
         reconnect()
         return f()
+
 
 def to_timestamp(dt):
     return (dt - datetime.datetime(1970, 1, 1)).total_seconds()
@@ -69,13 +72,11 @@ def get_all_students():
     return do_with_retry(doit)
 
 
-
 def get_all_opportunities():
     refresh_access_token()
 
     def f():
         rs = log_worksheet.get_all_records()
-
 
         for r in rs:
             if r["outcome"] == "ATTENDED":
@@ -122,6 +123,7 @@ def add_opportunity(op):
 
     return do_with_retry(f)
 
+
 def get_opportunity(guid):
     refresh_access_token()
 
@@ -133,7 +135,6 @@ def get_opportunity(guid):
                 return op
 
     return do_with_retry(f)
-
 
 
 def update_opportunity(guid, student_name):
@@ -193,6 +194,7 @@ def get_procedures():
 
     return do_with_retry(f)
 
+
 def get_locations():
     refresh_access_token()
 
@@ -200,6 +202,7 @@ def get_locations():
         return [l['location'] for l in locations_worksheet.get_all_records()]
 
     return do_with_retry(f)
+
 
 def get_timeframes():
     refresh_access_token()
@@ -209,6 +212,7 @@ def get_timeframes():
 
     return do_with_retry(f)
 
+
 def get_doctors():
     refresh_access_token()
 
@@ -216,6 +220,7 @@ def get_doctors():
         return [d['doctor'] for d in doctors_worksheet.get_all_records()]
 
     return do_with_retry(f)
+
 
 def log_sms(from_number, to_number, body, direction):
     refresh_access_token()
@@ -230,6 +235,5 @@ def log_sms(from_number, to_number, body, direction):
         vs.append(body)
         vs.append(direction)
         sms_log_worksheet.append_row(vs)
-
 
     return do_with_retry(f)
