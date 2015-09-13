@@ -34,7 +34,7 @@ doctors_worksheet = None
 sms_log_worksheet = None
 
 def reconnect():
-    global log_worksheet, student_worksheet, procedures_worksheet, timeframes_worksheet, locations_worksheet, doctors_worksheet
+    global log_worksheet, student_worksheet, procedures_worksheet, timeframes_worksheet, locations_worksheet, doctors_worksheet, sms_log_worksheet
     gs = gspread.authorize(creds)
     sheet = gs.open_by_key(config.google_sheet_key)
     log_worksheet = sheet.worksheet("log")
