@@ -63,13 +63,21 @@ def new_opportunity():
 # Endpoint for receiving SMS messages from Twilio
 @app.route('/sms', methods=['POST'])
 def receive_sms():
+
+    sms = dict(service_number=str(flask.request.form['To']),
+               mobile=str(flask.request.form['From']),
+               message=str(flask.request.form['Body']))
+
     print(str.format("Received SMS: \n"
                      "To: {0}\n"
                      "From: {1}\n"
                      "Body: {2}\n",
-                     str(flask.request.form['To']),
-                     str(flask.request.form['From']),
-                     str(flask.request.form['Body'])))
+                     sms['service_number'],
+                     sms['mobile'],
+                     sms['message']))
+
+    messaging.request_procedure(sms['mobile'], sms['message'])
+
     return '<Response></Response>'
 
 
