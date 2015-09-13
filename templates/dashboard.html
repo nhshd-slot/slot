@@ -17,7 +17,7 @@
                 <th>Time Requested</th>
                 <th>Requested By</th>
                 <th>Learning Opportunity</th>
-                <th>Mins Left</th>
+                <th>Time Left</th>
                 <th>Location</th>
                 <th>Status</th>
                 <th>Accepted By</th>
@@ -55,7 +55,7 @@
             <!--</tr>-->
             {% for op in ops|sort(attribute='time_sent', reverse=True) %}
                 <tr class="{{ op['class']}}">
-                    <td>{{op["time"]}}</td>
+                    <td>{{op["time"].strftime("%d %b, %H:%M")}}</td>
                     <td>{{op["doctor"]}}</td>
                     <td>{{op["procedure"]}}</td>
                     <td>
@@ -64,7 +64,7 @@
                         {% elif op["status"] == "Not Attended" %}
                             -
                         {% elif op["remaining_mins"] > 0 %}
-                            {{op["remaining_mins"]}}
+                            {{op["remaining_mins"]}} mins
                         {% else %}
                             -
                         {% endif %}

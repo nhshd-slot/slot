@@ -66,8 +66,7 @@ def request_procedure(mobile, friendly_ref):
                                  "Ask for {2} to complete this procedure.\n\n"
                                  "This learning opportunity has been reserved for you.",
                                  this_opportunity['location'],
-                                 # TODO: Format the timestamp so that it is just hh:mm
-                                 datetime.datetime.fromtimestamp(this_opportunity['expiry_time']),
+                                 datetime.datetime.fromtimestamp(this_opportunity['expiry_time']).strftime("%H:%M"),
                                  this_opportunity['doctor'])
 
             sms_twilio.send_sms(mobile, message)
