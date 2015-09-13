@@ -89,4 +89,10 @@ def update_opportunity(guid, student_name):
     print "Found op"
     print x
 
+    log_worksheet.update_cell(i, 7, student_name)    if x["student"]:
+        return False
+
     log_worksheet.update_cell(i, 7, student_name)
+    log_worksheet.update_cell(i, 8, to_timestamp(datetime.datetime.now()))
+
+    return True
