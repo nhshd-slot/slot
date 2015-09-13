@@ -10,7 +10,6 @@ from oauth2client.client import Credentials
 
 def refresh_access_token():
     creds.refresh(httplib2.Http())
-    storage.put(creds)
 
 print "Loading DB..."
 
