@@ -2,15 +2,19 @@ import gspread
 import config
 import datetime
 import uuid
+import httplib2
 
-class Creds(object):
+from oauth2client.file import Storage
 
-    def __init__(self, access_token):
-        self.access_token = access_token
-
+def refresh_access_token():
+    creds.refresh(httplib2.Http())
+    storage.put(creds)
 
 print "Loading DB..."
-creds = Creds(config.google_access_token)
+
+storage = Storage('credentials-nhshd.dat')
+creds = storage.get()
+refresh_access_token()
 gs = gspread.authorize(creds)
 sheet = gs.open_by_key(config.google_sheet_key)
 log_worksheet = sheet.worksheet("log")
@@ -24,11 +28,12 @@ def to_timestamp(dt):
 
 
 def get_all_students():
+    refresh_access_token()
     return student_worksheet.get_all_records()
 
 
 def get_all_opportunities():
-
+    refresh_access_token()
     rs = log_worksheet.get_all_records()
 
 
@@ -54,10 +59,7 @@ def get_all_opportunities():
 #
 # Returns the GUID of the created opportunity
 def add_opportunity(op):
-    c = Creds(config.google_access_token)
-    gs = gspread.authorize(c)
-    s = gs.open_by_key(config.google_sheet_key)
-    w = s.worksheet("log")
+    refresh_access_token()
 
     vs = [uuid.uuid4()]
 
@@ -67,6 +69,6 @@ def add_opportunity(op):
     vs.append(op["procedure"])
     vs.append(int(now + int(op["duration"]) * 60))
     vs.append(op["location"])
-    w.append_row(vs)
+    log_worksheet.append_row(vs)
 
     return vs[0]
