@@ -19,12 +19,13 @@ student_worksheet = sheet.worksheet("students")
 print "Complete"
 
 
-
 def to_timestamp(dt):
     return (dt - datetime.datetime(1970, 1, 1)).total_seconds()
 
+
 def get_all_students():
     return student_worksheet.get_all_records()
+
 
 def get_all_opportunities():
 
