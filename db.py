@@ -111,6 +111,7 @@ def update_opportunity(guid, student_name):
 
     return True
 
+
 def complete_opportunity(guid):
     refresh_access_token()
 
