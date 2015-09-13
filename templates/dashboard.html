@@ -21,7 +21,7 @@
                 <th>Location</th>
                 <th>Status</th>
                 <th>Accepted By</th>
-                <th>Outcome</th>
+                <th></th>
             </tr>
             <!--&lt;!&ndash; Style for released but unrequested job - use class .info &ndash;&gt;-->
             <!--<tr class="info">-->
@@ -59,7 +59,9 @@
                     <td>{{op["doctor"]}}</td>
                     <td>{{op["procedure"]}}</td>
                     <td>
-                        {% if op["status"] == "Completed" %}
+                        {% if op["status"] == "Attended" %}
+                            -
+                        {% elif op["status"] == "Not Attended" %}
                             -
                         {% elif op["remaining_mins"] > 0 %}
                             {{op["remaining_mins"]}}

@@ -24,7 +24,9 @@ def index():
             op["class"] = "info"
         elif op["status"] == "Expired":
             op["class"] = "active"
-        elif op["status"] == "Completed":
+        elif op["status"] == "Attended":
+            op["class"] = "active"
+        elif op["status"] == "Not Attended":
             op["class"] = "active"
 
         op["remaining_mins"] = int(int(op["expiry_time"] - db.to_timestamp(datetime.datetime.now())) / 60)
@@ -90,11 +92,18 @@ def receive_sms():
 
 @app.route('/complete', methods=['POST'])
 def complete_procedure():
+
     completed_id = flask.request.form['id']
-    attended_status = flask.request.form['attended_status']
+
+    if flask.request.form['attended_status'] == "Attended":
+        attended_status = True
+    else:
+        attended_status = False
+
     print(str(completed_id))
     print(str(attended_status))
-    db.complete_opportunity(completed_id)
+
+    db.complete_opportunity(completed_id, attended_status)
     return flask.redirect('/dashboard', code=302)
 
 
