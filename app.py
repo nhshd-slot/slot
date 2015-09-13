@@ -88,6 +88,13 @@ def receive_sms():
     return '<Response></Response>'
 
 
+@app.route('/complete', methods=['POST'])
+def complete_procedure():
+    completed_id = flask.request.form['id']
+    print(str(completed_id))
+    return flask.redirect('/dashboard', code=302)
+
+
 if __name__ == '__main__':
     app.debug = config.debug_mode
     app.port = os.environ.get("PORT", 5000)
