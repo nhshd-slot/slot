@@ -10,9 +10,36 @@ import messaging
 
 app = flask.Flask(__name__)
 
+from functools import wraps
+from flask import request, Response
+
+
+def check_auth(username, password):
+    """This function is called to check if a username /
+    password combination is valid.
+    """
+    return username == 'slot' and password == 'NHShackday3141'
+
+def authenticate():
+    """Sends a 401 response that enables basic auth"""
+    return Response(
+    'Could not verify your access level for that URL.\n'
+    'You have to login with proper credentials', 401,
+    {'WWW-Authenticate': 'Basic realm="Login Required"'})
+
+def requires_auth(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        auth = request.authorization
+        if not auth or not check_auth(auth.username, auth.password):
+            return authenticate()
+        return f(*args, **kwargs)
+    return decorated
+
 
 @app.route('/')
 @app.route('/dashboard')
+@requires_auth
 def index():
 
     ops = db.get_all_opportunities()
@@ -35,6 +62,7 @@ def index():
 
 
 @app.route('/new', methods=['GET'])
+@requires_auth
 def render_new_procedure_form():
     procedures = db.get_procedures()
     locations = db.get_locations()
@@ -45,6 +73,7 @@ def render_new_procedure_form():
 
 # Endpoint for new opportunity form submission
 @app.route('/new', methods=['POST'])
+@requires_auth
 def new_opportunity():
     opportunity_doctor = flask.request.form['doctor']
     opportunity_procedure = flask.request.form['procedure']
@@ -71,6 +100,7 @@ def new_opportunity():
 
 # Endpoint for receiving SMS messages from Twilio
 @app.route('/sms', methods=['POST'])
+@requires_auth
 def receive_sms():
 
     sms = dict(service_number=str(flask.request.form['To']),
@@ -91,6 +121,7 @@ def receive_sms():
 
 
 @app.route('/complete', methods=['POST'])
+@requires_auth
 def complete_procedure():
 
     completed_id = flask.request.form['id']
