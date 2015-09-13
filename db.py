@@ -6,6 +6,7 @@ import httplib2
 import os
 
 from oauth2client.file import Storage
+from oauth2client.client import Credentials
 
 def refresh_access_token():
     creds.refresh(httplib2.Http())
@@ -13,8 +14,15 @@ def refresh_access_token():
 
 print "Loading DB..."
 
-storage = os.environ.get("GOOGLE_CREDS", Storage('credentials-nhshd.dat'))
-creds = storage.get()
+
+if os.environ.get("GOOGLE_CREDS", None):
+    print "Loading google credentials from environment"
+    creds = Credentials.new_from_json(os.environ.get("GOOGLE_CREDS",""))
+else:
+    print "Loading google credentials from file"
+    storage = Storage('credentials-nhshd.dat')
+    creds = storage.get()
+
 refresh_access_token()
 gs = gspread.authorize(creds)
 sheet = gs.open_by_key(config.google_sheet_key)
