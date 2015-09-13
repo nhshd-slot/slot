@@ -13,34 +13,33 @@
             <div class="form-group">
                 <label for="doctor">Doctor Offering Supervision</label>
                 <select class="form-control" id="doctor" name="doctor">
-                    <option value="Dr J Porter">Dr J Porter</option>
-                    <option value="Dr S Cusack">Dr S Cusack</option>
-                    <option value="Dr T Wilson">Dr T Wilson</option>
-                    <option value="Dr S Barr">Dr S Barr</option>
+                    {% for d in doctors %}
+                        <option value="{{d}}">{{d}}</option>
+                    {% endfor %}
                 </select>
             </div>
             <div class="form-group">
                 <label for="procedure">Select Procedure</label>
                 <select class="form-control" id="procedure" name="procedure">
-                    <option value="Venepuncture">Venepuncture</option>
-                    <option value="Venous Cannula">Venous Cannula</option>
-                    <option value="Urethral Catheter">Urethral Catheter</option>
+                    {% for p in procedures %}
+                        <option value="{{p}}">{{p}}</option>
+                    {% endfor %}
                 </select>
             </div>
             <div class="form-group">
                 <label for="location">Location</label>
                 <select class="form-control" id="location" name="location">
-                    <option value="101">Ward 101</option>
-                    <option value="102">Ward 102</option>
-                    <option value="103">Ward 103</option>
+                    {% for l in locations %}
+                        <option value="{{l}}">{{l}}</option>
+                    {% endfor %}
                 </select>
             </div>
             <div class="form-group">
                 <label for="duration">Time Limit</label>
                 <select class="form-control" id="duration" name="duration">
-                    <option value="20">Within 20 mins</option>
-                    <option value="40">Within 40 mins</option>
-                    <option value="60">Within 60 mins</option>
+                    {% for t in timeframes %}
+                        <option value="{{t}}">{{t}} mins</option>
+                    {% endfor %}
                 </select>
             </div>
             <button type="submit" class="btn btn-primary btn-lg">Add Opportunity</button>

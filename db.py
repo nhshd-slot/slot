@@ -19,6 +19,10 @@ gs = gspread.authorize(creds)
 sheet = gs.open_by_key(config.google_sheet_key)
 log_worksheet = sheet.worksheet("log")
 student_worksheet = sheet.worksheet("students")
+procedures_worksheet = sheet.worksheet("procedures")
+timeframes_worksheet = sheet.worksheet("timeframes")
+locations_worksheet = sheet.worksheet("locations")
+doctors_worksheet = sheet.worksheet("doctors")
 
 print "Complete"
 
@@ -90,10 +94,26 @@ def update_opportunity(guid, student_name):
     print "Found opportunity in DB"
     print x
 
-    log_worksheet.update_cell(i, 7, student_name)    if x["student"]:
+    if x["student"]:
         return False
 
     log_worksheet.update_cell(i, 7, student_name)
     log_worksheet.update_cell(i, 8, to_timestamp(datetime.datetime.now()))
 
     return True
+
+def get_procedures():
+    refresh_access_token()
+    return [p['procedure'] for p in procedures_worksheet.get_all_records()]
+
+def get_locations():
+    refresh_access_token()
+    return [l['location'] for l in locations_worksheet.get_all_records()]
+
+def get_timeframes():
+    refresh_access_token()
+    return [t['timeframe'] for t in timeframes_worksheet.get_all_records()]
+
+def get_doctors():
+    refresh_access_token()
+    return [d['doctor'] for d in doctors_worksheet.get_all_records()]
