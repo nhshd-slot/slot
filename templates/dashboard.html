@@ -7,6 +7,7 @@
     <div class="nav-buttons">
         <div class="nav-buttons">
             <a href="/new" class="btn btn-lg btn-success" role="button">Add Opportunity</a>
+            <a href="/dashboard" class="btn btn-lg btn-info" role="button">Refresh</a>
         </div>
     </div>
     <div class="page-title"><h2>Existing Learning Opportunities</h2></div>
@@ -20,7 +21,7 @@
                 <th>Location</th>
                 <th>Status</th>
                 <th>Accepted By</th>
-                <th></th>
+                <th>Outcome</th>
             </tr>
             <!--&lt;!&ndash; Style for released but unrequested job - use class .info &ndash;&gt;-->
             <!--<tr class="info">-->
@@ -58,7 +59,9 @@
                     <td>{{op["doctor"]}}</td>
                     <td>{{op["procedure"]}}</td>
                     <td>
-                        {% if op["remaining_mins"] > 0 %}
+                        {% if op["status"] == "Completed" %}
+                            -
+                        {% elif op["remaining_mins"] > 0 %}
                             {{op["remaining_mins"]}}
                         {% else %}
                             -
@@ -70,7 +73,13 @@
                     <td>{% if op["status"] == "Accepted" %}
                         <form class="form" action="/complete" method="post">
                             <input type="hidden" value="{{op['id']}}" name="id" id="id">
-                            <button type="submit" class="btn btn-primary btn-xs">Complete</button>
+                            <input type="hidden" value="Attended" name="attended_status" id="attended_status">
+                            <button type="submit" class="btn btn-success btn-xs">Attended</button>
+                        </form>
+                            <form class="form" action="/complete" method="post">
+                            <input type="hidden" value="{{op['id']}}" name="id" id="id">
+                            <input type="hidden" value="DidNotAttend" name="attended_status" id="attended_status">
+                            <button type="submit" class="btn btn-danger btn-xs">Did Not Attend</button>
                         </form>
                         {% endif %}
                     </td>
