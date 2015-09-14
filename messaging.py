@@ -2,6 +2,7 @@ import sms_generator
 import sms_twilio
 import db
 import datetime
+import config
 
 list_of_opportunities = []
 
@@ -40,7 +41,7 @@ def broadcast_procedure(procedure, location, duration, doctor, ref_id, demo_mobi
     recipients = db.get_all_students()
     print(recipients)
 
-    if demo_mobiles:
+    if config.demo_mode:
         for demo_mobile in demo_mobiles:
             if demo_mobile:
                 print("Sending SMS")
@@ -63,11 +64,15 @@ def request_procedure(mobile, friendly_ref):
         students = db.get_all_students()
         int_mobile = int(mobile)
 
-        try:
-            student = [d for d in students if d['phone_number'] == int_mobile][0]
-            student_name = student['student']
-        except:
-            student_name = "Unknown Student"
+        if config.demo_mode:
+            student_name = str.format("XXXXX XXX{0}", mobile[-3:])
+
+        else:
+            try:
+                student = [d for d in students if d['phone_number'] == int_mobile][0]
+                student_name = student['student']
+            except:
+                student_name = "Unknown Student"
 
         result = db.update_opportunity(opportunity_id, student_name)
         this_opportunity = db.get_opportunity(opportunity_id)
