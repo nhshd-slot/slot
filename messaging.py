@@ -33,27 +33,41 @@ def remove_unique_ref(ref):
     list_of_opportunities.pop(str(ref), None)
 
 
-def broadcast_procedure(procedure, location, duration, doctor, ref_id):
+def broadcast_procedure(procedure, location, duration, doctor, ref_id, demo_mobiles=None):
     message_ref = get_friendly_ref(ref_id)
     message = sms_generator.new_procedure_message(procedure, location, duration, doctor, message_ref)
 
     recipients = db.get_all_students()
     print(recipients)
 
-    for recipient in recipients:
-        print("Sending SMS")
-        print(recipient)
-        sms_twilio.send_sms(recipient['phone_number'], message)
+    if demo_mobiles:
+        for demo_mobile in demo_mobiles:
+            if demo_mobile:
+                print("Sending SMS")
+                print(demo_mobile)
+                sms_twilio.send_sms(demo_mobile, message)
+
+    else:
+        for recipient in recipients:
+            print("Sending SMS")
+            print(recipient)
+            sms_twilio.send_sms(recipient['phone_number'], message)
+
 
 
 def request_procedure(mobile, friendly_ref):
     try:
         opportunity = [d for d in list_of_opportunities if d['ref'] == int(friendly_ref)][0]
         opportunity_id = str(opportunity['id'])
+
         students = db.get_all_students()
         int_mobile = int(mobile)
-        student = [d for d in students if d['phone_number'] == int_mobile][0]
-        student_name = student['student']
+
+        try:
+            student = [d for d in students if d['phone_number'] == int_mobile][0]
+            student_name = student['student']
+        except:
+            student_name = "Unknown Student"
 
         result = db.update_opportunity(opportunity_id, student_name)
         this_opportunity = db.get_opportunity(opportunity_id)
