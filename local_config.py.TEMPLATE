@@ -9,3 +9,4 @@ google_client_secret = 'xxxxx'
 google_sheet_key = 'xxxxx'
 
 debug_mode = True
+demo_mode = True

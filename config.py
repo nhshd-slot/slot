@@ -16,4 +16,6 @@ except ImportError:
     website_user = os.environ.get('WEBSITE_USER', '')
     website_pass = os.environ.get('WEBSITE_PASS', '')
 
-    debug_mode = True
+    demo_mode = os.environ.get('DEMO_MODE', '')
+
+    debug_mode = os.environ.get('DEBUG_MODE', '')
