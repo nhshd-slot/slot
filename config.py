@@ -13,4 +13,7 @@ except ImportError:
 
     google_sheet_key = os.environ.get('GOOGLE_SHEET_KEY', '')
 
+    website_user = os.environ.get('WEBSITE_USER', '')
+    website_pass = os.environ.get('WEBSITE_PASS', '')
+
     debug_mode = True
