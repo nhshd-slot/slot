@@ -42,6 +42,16 @@
                     {% endfor %}
                 </select>
             </div>
+            {% if demo_mode == True %}
+            <div class="form-group">
+                <label for="mobile_number1">Mobile Number 1</label><br/>
+                <input type="text" id="mobile_number1" name="mobile_number1">
+            </div>
+            <div class="form-group">
+                <label for="mobile_number2">Mobile Number 2</label><br/>
+                <input type="text" id="mobile_number2" name="mobile_number2">
+            </div>
+            {% endif %}
             <button type="submit" class="btn btn-primary btn-lg">Add Opportunity</button>
         </form>
     </div>
