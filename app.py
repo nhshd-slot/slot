@@ -80,6 +80,8 @@ def new_opportunity():
     opportunity_procedure = flask.request.form['procedure']
     opportunity_location = flask.request.form['location']
     opportunity_duration = flask.request.form['duration']
+    opportunity_mobile1 = flask.request.form['mobile_number1']
+    opportunity_mobile2 = flask.request.form['mobile_number2']
 
     opportunity = dict({
         'doctor': opportunity_doctor,
@@ -88,12 +90,15 @@ def new_opportunity():
         'duration': opportunity_duration
     })
 
+    demo_mobiles = [opportunity_mobile1, opportunity_mobile2]
+
     ref_id = db.add_opportunity(opportunity)
     messaging.broadcast_procedure(opportunity_procedure,
                                   opportunity_location,
                                   opportunity_duration,
                                   opportunity_doctor,
-                                  ref_id)
+                                  ref_id,
+                                  demo_mobiles)
 
     print(flask.json.dumps(opportunity))
     return flask.redirect('/dashboard', code=302)
