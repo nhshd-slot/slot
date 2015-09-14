@@ -11,7 +11,8 @@ from oauth2client.client import Credentials
 
 
 def refresh_access_token():
-    creds._do_refresh_request(httplib2.Http().request)
+    if creds.access_token_expired:
+        creds._do_refresh_request(httplib2.Http().request)
 
 print "Loading DB..."
 
