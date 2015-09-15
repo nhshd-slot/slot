@@ -36,6 +36,7 @@ def remove_unique_ref(ref):
 
 def broadcast_procedure(procedure, location, duration, doctor, ref_id, demo_mobiles=None):
     message_ref = get_friendly_ref(ref_id)
+    print(str.format("Ref is {0}", ref_id))
     message = sms_generator.new_procedure_message(procedure, location, duration, doctor, message_ref)
 
     recipients = db.get_all_students()
@@ -60,14 +61,18 @@ def request_procedure(mobile, friendly_ref):
     try:
         opportunity = [d for d in list_of_opportunities if d['ref'] == int(friendly_ref)][0]
         opportunity_id = str(opportunity['id'])
+        print(str.format("Opportunity ID is {0}", opportunity_id))
 
         students = db.get_all_students()
+        print(students)
         int_mobile = int(mobile)
 
         if config.demo_mode:
+            print("Processing in demo mode so will use partially-redacted mobile number as name")
             student_name = str.format("XXXXX XXX{0}", mobile[-3:])
 
         else:
+            print("Processing in live mode")
             try:
                 student = [d for d in students if d['phone_number'] == int_mobile][0]
                 student_name = student['student']
@@ -75,7 +80,9 @@ def request_procedure(mobile, friendly_ref):
                 student_name = "Unknown Student"
 
         result = db.update_opportunity(opportunity_id, student_name)
+        print(str.format("Result of database commit was {0}", result))
         this_opportunity = db.get_opportunity(opportunity_id)
+        print(str.format("This opportunity is {0}", this_opportunity))
 
         if result is False:
             sms_twilio.send_sms(mobile, "Sorry - this learning opportunity has been taken by another student. ")

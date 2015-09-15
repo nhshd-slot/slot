@@ -4,6 +4,7 @@
 
 {% block content %}
 <div class="container">
+    Demo mode is {{ demo_mode }}
     <div class="nav-buttons">
         <a href="/" class="btn btn btn-danger" role="button">Cancel (Back To List)</a>
     </div>
@@ -42,8 +43,8 @@
                     {% endfor %}
                 </select>
             </div>
-            {% if demo_mode == True %}
-            DEMO MODE
+            {% if demo_mode %}
+            Please enter mobile numbers in format "447712938472"
             <div class="form-group">
                 <label for="mobile_number1">Mobile Number 1</label><br/>
                 <input type="text" id="mobile_number1" name="mobile_number1">

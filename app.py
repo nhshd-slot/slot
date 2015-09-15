@@ -68,8 +68,10 @@ def render_new_procedure_form():
     locations = db.get_locations()
     timeframes = db.get_timeframes()
     doctors = db.get_doctors()
+    demo_mode2 = config.demo_mode
+    print(str.format("Demo mode is: {0}", demo_mode2))
     return flask.render_template('new_procedure.html', procedures = procedures, locations = locations,
-                                 timeframes = timeframes, doctors = doctors, demo_mode = config.demo_mode)
+                                 timeframes = timeframes, doctors = doctors, demo_mode = demo_mode2)
 
 
 # Endpoint for new opportunity form submission
