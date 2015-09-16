@@ -1,8 +1,13 @@
+from rq import Queue
+from worker import conn
+
 import sms_generator
 import sms_twilio
 import db
 import datetime
 import config
+
+q = Queue(connection=conn)
 
 list_of_opportunities = []
 
@@ -45,13 +50,14 @@ def broadcast_procedure(procedure, location, duration, doctor, ref_id, demo_mobi
     if config.demo_mode:
         for demo_mobile in demo_mobiles:
             if demo_mobile:
-                print("Sending SMS")
+                print("Queuing SMS")
                 print(demo_mobile)
-                sms_twilio.send_sms(demo_mobile, message)
+                result = q.enqueue(sms_twilio.send_sms, demo_mobile, message)
+
 
     else:
         for recipient in recipients:
-            print("Sending SMS")
+            print("Queuing SMS")
             print(recipient)
             sms_twilio.send_sms(recipient['phone_number'], message)
 
