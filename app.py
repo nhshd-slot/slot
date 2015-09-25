@@ -65,6 +65,7 @@ def index():
 @requires_auth
 def render_new_procedure_form():
     if request.method == 'POST':
+        print(request.form)
         opportunity_doctor = flask.request.form['doctor']
         opportunity_procedure = flask.request.form['procedure']
         opportunity_location = flask.request.form['location']
@@ -105,38 +106,6 @@ def render_new_procedure_form():
         print(str.format("Demo mode is: {0}", demo_mode2))
         return flask.render_template('new_procedure.html', procedures = procedures, locations = locations,
                                      timeframes = timeframes, doctors = doctors, demo_mode = demo_mode2)
-
-
-# # Endpoint for new opportunity form submission
-# @app.route('/new', methods=['POST'])
-# @requires_auth
-# def new_opportunity():
-#     opportunity_doctor = flask.request.form['doctor']
-#     opportunity_procedure = flask.request.form['procedure']
-#     opportunity_location = flask.request.form['location']
-#     opportunity_duration = flask.request.form['duration']
-#     opportunity_mobile1 = flask.request.form['mobile_number1']
-#     opportunity_mobile2 = flask.request.form['mobile_number2']
-#
-#     opportunity = dict({
-#         'doctor': opportunity_doctor,
-#         'procedure': opportunity_procedure,
-#         'location': opportunity_location,
-#         'duration': opportunity_duration
-#     })
-#
-#     demo_mobiles = [opportunity_mobile1, opportunity_mobile2]
-#
-#     # ref_id = db.add_opportunity(opportunity)
-#     # messaging.broadcast_procedure(opportunity_procedure,
-#     #                               opportunity_location,
-#     #                               opportunity_duration,
-#     #                               opportunity_doctor,
-#     #                               ref_id,
-#     #                               demo_mobiles)
-#
-#     print(flask.json.dumps(opportunity))
-#     return flask.redirect('/dashboard', code=302)
 
 
 # Endpoint for receiving SMS messages from Twilio
