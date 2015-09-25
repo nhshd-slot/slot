@@ -47,13 +47,12 @@ def broadcast_procedure(procedure, location, duration, doctor, ref_id, demo_mobi
     recipients = db.get_all_students()
     print(recipients)
 
-    if config.demo_mode:
+    if demo_mobiles:
         for demo_mobile in demo_mobiles:
             if demo_mobile:
                 print("Queuing SMS")
                 print(demo_mobile)
                 result = q.enqueue(sms_twilio.send_sms, demo_mobile, message)
-
 
     else:
         for recipient in recipients:
