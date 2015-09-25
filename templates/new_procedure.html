@@ -4,7 +4,6 @@
 
 {% block content %}
 <div class="container">
-    Demo mode is {{ demo_mode }}
     <div class="nav-buttons">
         <a href="/" class="btn btn btn-danger" role="button">Cancel (Back To List)</a>
     </div>
@@ -53,10 +52,14 @@
                 <label for="mobile_number2">Mobile Number 2</label><br/>
                 <input type="text" id="mobile_number2" name="mobile_number2">
             </div>
+            {& elif %}
             {% endif %}
             <button type="submit" class="btn btn-primary btn-lg">Add Opportunity</button>
         </form>
     </div>
+    {% if demo_mode %}
+    Demo mode is {{ demo_mode }}
+    {% endif %}
 </div>
 
 {% endblock %}
