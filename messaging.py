@@ -72,7 +72,7 @@ def request_procedure(mobile, friendly_ref):
         print(students)
         int_mobile = int(mobile)
 
-        if config.demo_mode:
+        if False:
             print("Processing in demo mode so will use partially-redacted mobile number as name")
             student_name = str.format("XXXXX XXX{0}", mobile[-3:])
 
