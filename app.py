@@ -71,30 +71,42 @@ def render_new_procedure_form():
         opportunity_location = flask.request.form['location']
         opportunity_duration = flask.request.form['duration']
 
-        # if config.demo_mode:
-        #     opportunity_mobile1 = flask.request.form['mobile_number1']
-        #     opportunity_mobile2 = flask.request.form['mobile_number2']
+        if config.demo_mode:
+            opportunity_mobile1 = flask.request.form['mobile_number1']
+            opportunity_mobile2 = flask.request.form['mobile_number2']
 
-        opportunity = dict({
-            'doctor': opportunity_doctor,
-            'procedure': opportunity_procedure,
-            'location': opportunity_location,
-            'duration': opportunity_duration
-        })
+            opportunity = dict({
+                'doctor': opportunity_doctor,
+                'procedure': opportunity_procedure,
+                'location': opportunity_location,
+                'duration': opportunity_duration,
+                'mobile1': opportunity_mobile1,
+                'mobile2': opportunity_mobile2
+            })
 
-        # if config.demo_mode:
-        #     demo_mobiles = [opportunity_mobile1, opportunity_mobile2]
-        # else:
-        #     demo_mobiles = None
+            demo_mobiles = [opportunity_mobile1, opportunity_mobile2]
+
+        else:
+            opportunity = dict({
+                'doctor': opportunity_doctor,
+                'procedure': opportunity_procedure,
+                'location': opportunity_location,
+                'duration': opportunity_duration
+            })
+
+            demo_mobiles = None
 
         ref_id = db.add_opportunity(opportunity)
+
         messaging.broadcast_procedure(opportunity_procedure,
                                       opportunity_location,
                                       opportunity_duration,
                                       opportunity_doctor,
-                                      ref_id)
+                                      ref_id,
+                                      demo_mobiles)
 
         print(flask.json.dumps(opportunity))
+
         return flask.redirect('/dashboard', code=302)
 
     else:
