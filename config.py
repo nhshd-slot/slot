@@ -1,4 +1,5 @@
 import os
+
 try:
     from local_config import *
 
@@ -16,6 +17,9 @@ except ImportError:
     website_user = os.environ.get('WEBSITE_USER', '')
     website_pass = os.environ.get('WEBSITE_PASS', '')
 
-    demo_mode = os.environ.get('DEMO_MODE', '')
+    # We need the following variables to be boolean so we just check for a value against the environment variable
+    # to mean True and then take absence of either a value or the variable to mean False
 
-    debug_mode = os.environ.get('DEBUG_MODE', '')
+    demo_mode = bool(os.environ.get('DEMO_MODE', False))
+
+    debug_mode = bool(os.environ.get('DEBUG_MODE', False))
