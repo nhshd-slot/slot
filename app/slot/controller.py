@@ -1,14 +1,16 @@
 # 3rd Party Modules
-import flask
 import datetime
+
+import flask
 import os
 
 # Local Modules
+from app import app
 import config
-import db
+import db_sheets
 import messaging
 
-app = flask.Flask(__name__)
+
 
 from functools import wraps
 from flask import request, Response
@@ -23,9 +25,9 @@ def check_auth(username, password):
 def authenticate():
     """Sends a 401 response that enables basic auth"""
     return Response(
-    'Could not verify your access level for that URL.\n'
-    'You have to login with proper credentials', 401,
-    {'WWW-Authenticate': 'Basic realm="Login Required"'})
+        'Could not verify your access level for that URL.\n'
+        'You have to login with proper credentials', 401,
+        {'WWW-Authenticate': 'Basic realm="Login Required"'})
 
 def requires_auth(f):
     @wraps(f)
@@ -42,7 +44,7 @@ def requires_auth(f):
 @requires_auth
 def index():
 
-    ops = db.get_all_opportunities()
+    ops = db_sheets.get_all_opportunities()
 
     for op in ops:
         if op["status"] == "Accepted":
@@ -56,7 +58,7 @@ def index():
         elif op["status"] == "Not Attended":
             op["class"] = "active"
 
-        op["remaining_mins"] = int(int(op["expiry_time"] - db.to_timestamp(datetime.datetime.utcnow())) / 60)
+        op["remaining_mins"] = int(int(op["expiry_time"] - db_sheets.to_timestamp(datetime.datetime.utcnow())) / 60)
 
     return flask.render_template('dashboard.html', ops = ops)
 
@@ -96,7 +98,7 @@ def render_new_procedure_form():
 
             demo_mobiles = None
 
-        ref_id = db.add_opportunity(opportunity)
+        ref_id = db_sheets.add_opportunity(opportunity)
 
         messaging.broadcast_procedure(opportunity_procedure,
                                       opportunity_location,
@@ -110,10 +112,10 @@ def render_new_procedure_form():
         return flask.redirect('/dashboard', code=302)
 
     else:
-        procedures = db.get_procedures()
-        locations = db.get_locations()
-        timeframes = db.get_timeframes()
-        doctors = db.get_doctors()
+        procedures = db_sheets.get_procedures()
+        locations = db_sheets.get_locations()
+        timeframes = db_sheets.get_timeframes()
+        doctors = db_sheets.get_doctors()
         demo_mode2 = config.demo_mode
         print(str.format("Demo mode is: {0}", demo_mode2))
         return flask.render_template('new_procedure.html', procedures = procedures, locations = locations,
@@ -139,7 +141,7 @@ def receive_sms():
 
     messaging.request_procedure(sms['mobile'], sms['message'])
 
-    db.log_sms(sms['mobile'], sms['service_number'], sms['message'], 'IN')
+    db_sheets.log_sms(sms['mobile'], sms['service_number'], sms['message'], 'IN')
 
     return '<Response></Response>'
 
@@ -158,7 +160,7 @@ def complete_procedure():
     print(str(completed_id))
     print(str(attended_status))
 
-    db.complete_opportunity(completed_id, attended_status)
+    db_sheets.complete_opportunity(completed_id, attended_status)
     return flask.redirect('/dashboard', code=302)
 
 

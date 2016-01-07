@@ -1,11 +1,10 @@
-from rq import Queue
-from worker import conn
+import datetime
 
+import db_sheets
 import sms_generator
 import sms_twilio
-import db
-import datetime
-import config
+from rq import Queue
+from bg_worker import conn
 
 q = Queue(connection=conn)
 
@@ -44,7 +43,7 @@ def broadcast_procedure(procedure, location, duration, doctor, ref_id, demo_mobi
     print(str.format("Ref is {0}", ref_id))
     message = sms_generator.new_procedure_message(procedure, location, duration, doctor, message_ref)
 
-    recipients = db.get_all_students()
+    recipients = db_sheets.get_all_students()
     print(recipients)
 
     if demo_mobiles:
@@ -68,7 +67,7 @@ def request_procedure(mobile, friendly_ref):
         opportunity_id = str(opportunity['id'])
         print(str.format("Opportunity ID is {0}", opportunity_id))
 
-        students = db.get_all_students()
+        students = db_sheets.get_all_students()
         print(students)
         int_mobile = int(mobile)
 
@@ -84,9 +83,9 @@ def request_procedure(mobile, friendly_ref):
             except:
                 student_name = "Unknown Student"
 
-        result = db.update_opportunity(opportunity_id, student_name)
+        result = db_sheets.update_opportunity(opportunity_id, student_name)
         print(str.format("Result of database commit was {0}", result))
-        this_opportunity = db.get_opportunity(opportunity_id)
+        this_opportunity = db_sheets.get_opportunity(opportunity_id)
         print(str.format("This opportunity is {0}", this_opportunity))
 
         if result is False:
