@@ -1,13 +1,14 @@
 # 3rd Party Modules
 import datetime
 
-import flask
 import os
+from flask import request, redirect, render_template, json
 
 # Local Modules
 from app import app
 import config
 from auth import requires_auth
+from app.slot import db_fieldbook as fieldbook, messaging
 
 
 @app.route('/')
@@ -15,7 +16,7 @@ from auth import requires_auth
 @requires_auth
 def index():
 
-    ops = db_sheets.get_all_opportunities()
+    ops = fieldbook.get_all_opportunities()
 
     for op in ops:
         if op["status"] == "Accepted":
@@ -29,9 +30,9 @@ def index():
         elif op["status"] == "Not Attended":
             op["class"] = "active"
 
-        op["remaining_mins"] = int(int(op["expiry_time"] - db_sheets.to_timestamp(datetime.datetime.utcnow())) / 60)
+        op["remaining_mins"] = int(int(op["expiry_time"] - fieldbook.to_timestamp(datetime.datetime.utcnow())) / 60)
 
-    return flask.render_template('dashboard.html', ops = ops)
+    return render_template('dashboard.html', ops = ops)
 
 
 @app.route('/new', methods=['GET', 'POST'])
@@ -39,14 +40,14 @@ def index():
 def render_new_procedure_form():
     if request.method == 'POST':
         print(request.form)
-        opportunity_doctor = flask.request.form['doctor']
-        opportunity_procedure = flask.request.form['procedure']
-        opportunity_location = flask.request.form['location']
-        opportunity_duration = flask.request.form['duration']
+        opportunity_doctor = request.form['doctor']
+        opportunity_procedure = request.form['procedure']
+        opportunity_location = request.form['location']
+        opportunity_duration = request.form['duration']
 
         if config.demo_mode:
-            opportunity_mobile1 = flask.request.form['mobile_number1']
-            opportunity_mobile2 = flask.request.form['mobile_number2']
+            opportunity_mobile1 = request.form['mobile_number1']
+            opportunity_mobile2 = request.form['mobile_number2']
 
             opportunity = dict({
                 'doctor': opportunity_doctor,
@@ -69,7 +70,8 @@ def render_new_procedure_form():
 
             demo_mobiles = None
 
-        ref_id = db_sheets.add_opportunity(opportunity)
+        print(opportunity)
+        ref_id = fieldbook.add_opportunity(opportunity)
 
         messaging.broadcast_procedure(opportunity_procedure,
                                       opportunity_location,
@@ -78,18 +80,18 @@ def render_new_procedure_form():
                                       ref_id,
                                       demo_mobiles)
 
-        print(flask.json.dumps(opportunity))
+        print(json.dumps(opportunity))
 
-        return flask.redirect('/dashboard', code=302)
+        return redirect('/dashboard', code=302)
 
     else:
-        procedures = db_sheets.get_procedures()
-        locations = db_sheets.get_locations()
-        timeframes = db_sheets.get_timeframes()
-        doctors = db_sheets.get_doctors()
+        procedures = fieldbook.get_procedures()
+        locations = fieldbook.get_locations()
+        timeframes = fieldbook.get_timeframes()
+        doctors = fieldbook.get_doctors()
         demo_mode2 = config.demo_mode
         print(str.format("Demo mode is: {0}", demo_mode2))
-        return flask.render_template('new_procedure.html', procedures = procedures, locations = locations,
+        return render_template('new_procedure.html', procedures = procedures, locations = locations,
                                      timeframes = timeframes, doctors = doctors, demo_mode = demo_mode2)
 
 
@@ -98,9 +100,9 @@ def render_new_procedure_form():
 @requires_auth
 def receive_sms():
 
-    sms = dict(service_number=str(flask.request.form['To']),
-               mobile=str(flask.request.form['From']),
-               message=str(flask.request.form['Body']))
+    sms = dict(service_number=str(request.form['To']),
+               mobile=str(request.form['From']),
+               message=str(request.form['Body']))
 
     print(str.format("Received SMS: \n"
                      "Service Number: {0}\n"
@@ -112,7 +114,7 @@ def receive_sms():
 
     messaging.request_procedure(sms['mobile'], sms['message'])
 
-    db_sheets.log_sms(sms['mobile'], sms['service_number'], sms['message'], 'IN')
+    fieldbook.add_sms_log(sms['mobile'], sms['service_number'], sms['message'], 'IN')
 
     return '<Response></Response>'
 
@@ -121,9 +123,9 @@ def receive_sms():
 @requires_auth
 def complete_procedure():
 
-    completed_id = flask.request.form['id']
+    completed_id = request.form['id']
 
-    if flask.request.form['attended_status'] == "Attended":
+    if request.form['attended_status'] == "Attended":
         attended_status = True
     else:
         attended_status = False
@@ -131,8 +133,8 @@ def complete_procedure():
     print(str(completed_id))
     print(str(attended_status))
 
-    db_sheets.complete_opportunity(completed_id, attended_status)
-    return flask.redirect('/dashboard', code=302)
+    fieldbook.complete_opportunity(completed_id, attended_status)
+    return redirect('/dashboard', code=302)
 
 
 if __name__ == '__main__':

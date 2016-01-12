@@ -56,8 +56,8 @@
             {% for op in ops|sort(attribute='time_sent', reverse=True) %}
                 <tr class="{{ op['class']}}">
                     <td>{{op["time"].strftime("%d %b, %H:%M")}}</td>
-                    <td>{{op["doctor"]}}</td>
-                    <td>{{op["procedure"]}}</td>
+                    <td>{{op["teacher"]}}</td>
+                    <td>{{op["skill"]}}</td>
                     <td>
                         {% if op["status"] == "Attended" %}
                             -

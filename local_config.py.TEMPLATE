@@ -1,12 +1,11 @@
 
-twilio_sid = "xxxxx"
-twilio_token = "xxxxx"
+twilio_sid = 'xxxxx'
+twilio_token = 'xxxxx'
 twilio_number = 'xxxxx'
 
-google_client_id = 'xxxxx'
-google_client_secret = 'xxxxx'
-
-google_sheet_key = 'xxxxx'
+fieldbook_url = 'xxxxx'
+fieldbook_user = 'xxxxx'
+fieldbook_pass = 'xxxxx'
 
 debug_mode = True
 demo_mode = True
