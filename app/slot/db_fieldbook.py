@@ -121,14 +121,21 @@ def add_sms_log(from_number, to_number, body, direction):
 def allocate_opportunity(opportunity_id, student_name):
     now = int(to_timestamp(datetime.datetime.utcnow()))
 
-    patch_object = {
-        'student': student_name,
-        'accepted_time': now
-    }
+    opportunity = get_opportunity(opportunity_id)
 
-    update_record('opportunities', opportunity_id, patch_object)
+    if opportunity['student'] is None:
 
-    return
+        patch_object = {
+            'student': student_name,
+            'accepted_time': now
+        }
+
+        update_record('opportunities', opportunity_id, patch_object)
+
+        return True
+
+    else:
+        return False
 
 
 def complete_opportunity(opportunity_id, outcome):
