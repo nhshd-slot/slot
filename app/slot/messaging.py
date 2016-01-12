@@ -1,9 +1,9 @@
 import datetime
-from rq import Queue
 
 import app.slot.sms_twilio
 from app.slot import db_fieldbook as fieldbook, sms_creator
-from app.slot.bg_worker import conn
+from bg_worker import conn
+from rq import Queue
 
 q = Queue(connection=conn)
 
