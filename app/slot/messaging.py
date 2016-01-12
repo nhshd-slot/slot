@@ -97,7 +97,9 @@ def request_procedure(mobile, friendly_ref):
         print(str.format("This opportunity is {0}", this_opportunity))
 
         if result is False:
-            app.slot.sms_twilio.send_sms(mobile, "Sorry - this learning opportunity has been taken by another student. ")
+            result = q.enqueue(app.slot.sms_twilio.send_sms,
+                               mobile,
+                               "Sorry - this learning opportunity has been taken by another student. ")
 
         elif result is True:
             message = str.format("Attend {0} by {1}.\n\n"
@@ -105,9 +107,11 @@ def request_procedure(mobile, friendly_ref):
                                  "This learning opportunity has been reserved for you.",
                                  this_opportunity['location'],
                                  datetime.datetime.fromtimestamp(this_opportunity['expiry_time']).strftime("%H:%M"),
-                                 this_opportunity['doctor'])
+                                 this_opportunity['teacher'])
 
-            app.slot.sms_twilio.send_sms(mobile, message)
+            result = q.enqueue(app.slot.sms_twilio.send_sms,
+                               mobile,
+                               message)
 
     except IndexError as e:
         print(e)
