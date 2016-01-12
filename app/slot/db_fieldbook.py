@@ -2,7 +2,7 @@ import requests
 import config
 import datetime
 from flask import json
-
+from app import cache
 
 def to_timestamp(dt):
     return (dt - datetime.datetime(1970, 1, 1)).total_seconds()
@@ -36,22 +36,27 @@ def update_record(sheet, patch_id, patch):
     return result
 
 
+@cache.cached(key_prefix='all_doctors')
 def get_doctors():
     return [d['name'] for d in get_sheet_all_records('teachers')]
 
 
+@cache.cached(key_prefix='all_timeframes')
 def get_timeframes():
     return [t['timeframe'] for t in get_sheet_all_records('timeframes')]
 
 
+@cache.cached(key_prefix='all_locations')
 def get_locations():
     return [l['name'] for l in get_sheet_all_records('locations')]
 
 
+@cache.cached(key_prefix='all_procedures')
 def get_procedures():
     return [p['name'] for p in get_sheet_all_records('procedures')]
 
 
+@cache.cached(key_prefix='all_students')
 def get_students():
     return [s for s in get_sheet_all_records('students')]
 
