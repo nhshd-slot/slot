@@ -1,2 +1,2 @@
-web: python app.py
-worker: python worker.py
+web: python run.py
+worker: python app/slot/worker.py
