@@ -1,9 +1,9 @@
 import datetime
-from rq import Queue
 
 import app.slot.sms_twilio
 from app.slot import db_fieldbook as fieldbook, sms_creator
-from app.slot.bg_worker import conn
+from bg_worker import conn
+from rq import Queue
 
 q = Queue(connection=conn)
 
@@ -61,8 +61,8 @@ def broadcast_procedure(procedure, location, duration, doctor, ref_id, demo_mobi
 
 def request_procedure(mobile, friendly_ref):
     try:
-        opportunity = [d for d in list_of_opportunities if d['ref'] == int(friendly_ref)][0]
-        opportunity_id = str(opportunity['id'])
+        opportunity = [d for d in list_of_opportunities if d['ref'] == int(friendly_ref)]
+        opportunity_id = int(opportunity[0]['id'])
         print(str.format("Opportunity ID is {0}", opportunity_id))
 
         students = fieldbook.get_students()
@@ -97,7 +97,9 @@ def request_procedure(mobile, friendly_ref):
         print(str.format("This opportunity is {0}", this_opportunity))
 
         if result is False:
-            app.slot.sms_twilio.send_sms(mobile, "Sorry - this learning opportunity has been taken by another student. ")
+            q.enqueue(app.slot.sms_twilio.send_sms,
+                               mobile,
+                               "Sorry - this learning opportunity has been taken by another student. ")
 
         elif result is True:
             message = str.format("Attend {0} by {1}.\n\n"
@@ -105,14 +107,18 @@ def request_procedure(mobile, friendly_ref):
                                  "This learning opportunity has been reserved for you.",
                                  this_opportunity['location'],
                                  datetime.datetime.fromtimestamp(this_opportunity['expiry_time']).strftime("%H:%M"),
-                                 this_opportunity['doctor'])
+                                 this_opportunity['teacher'])
 
-            app.slot.sms_twilio.send_sms(mobile, message)
+            q.enqueue(app.slot.sms_twilio.send_sms,
+                               mobile,
+                               message)
 
     except IndexError as e:
         print(e)
         print("Opportunity not found")
-        app.slot.sms_twilio.send_sms(mobile, "Sorry - this opportunity is not available.")
+        q.enqueue(app.slot.sms_twilio.send_sms,
+                           mobile,
+                           "Sorry - this opportunity is not available.")
 
     except Exception as e:
         print(e)
