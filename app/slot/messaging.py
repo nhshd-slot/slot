@@ -61,8 +61,8 @@ def broadcast_procedure(procedure, location, duration, doctor, ref_id, demo_mobi
 
 def request_procedure(mobile, friendly_ref):
     try:
-        opportunity = [d for d in list_of_opportunities if d['ref'] == int(friendly_ref)][0]
-        opportunity_id = str(opportunity['id'])
+        opportunity = [d for d in list_of_opportunities if d['ref'] == int(friendly_ref)]
+        opportunity_id = int(opportunity[0]['id'])
         print(str.format("Opportunity ID is {0}", opportunity_id))
 
         students = fieldbook.get_students()
@@ -97,7 +97,7 @@ def request_procedure(mobile, friendly_ref):
         print(str.format("This opportunity is {0}", this_opportunity))
 
         if result is False:
-            result = q.enqueue(app.slot.sms_twilio.send_sms,
+            q.enqueue(app.slot.sms_twilio.send_sms,
                                mobile,
                                "Sorry - this learning opportunity has been taken by another student. ")
 
@@ -109,14 +109,16 @@ def request_procedure(mobile, friendly_ref):
                                  datetime.datetime.fromtimestamp(this_opportunity['expiry_time']).strftime("%H:%M"),
                                  this_opportunity['teacher'])
 
-            result = q.enqueue(app.slot.sms_twilio.send_sms,
+            q.enqueue(app.slot.sms_twilio.send_sms,
                                mobile,
                                message)
 
     except IndexError as e:
         print(e)
         print("Opportunity not found")
-        app.slot.sms_twilio.send_sms(mobile, "Sorry - this opportunity is not available.")
+        q.enqueue(app.slot.sms_twilio.send_sms,
+                           mobile,
+                           "Sorry - this opportunity is not available.")
 
     except Exception as e:
         print(e)
