@@ -1,2 +1,2 @@
 web: python run.py
-worker: python app/slot/bg_worker.py
+worker: python bg_worker.py
