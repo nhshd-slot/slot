@@ -1,9 +1,12 @@
 import datetime
+import logging
 
 import app.slot.sms_twilio
 from app.slot import db_fieldbook as fieldbook, sms_creator
 from bg_worker import conn
 from rq import Queue
+
+log = logging.getLogger('slot')
 
 q = Queue(connection=conn)
 

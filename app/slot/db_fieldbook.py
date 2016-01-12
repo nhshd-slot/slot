@@ -1,8 +1,12 @@
 import requests
 import config
 import datetime
+import logging
 from flask import json
 from app import cache
+
+log = logging.getLogger('slot')
+
 
 def to_timestamp(dt):
     return (dt - datetime.datetime(1970, 1, 1)).total_seconds()
@@ -11,9 +15,18 @@ def to_timestamp(dt):
 def get_sheet_all_records(sheet):
     url = str.format('{0}{1}{2}', config.fieldbook_url, '/', sheet)
     print(url)
-    request = requests.get(url,
-                           auth=(config.fieldbook_user, config.fieldbook_pass))
-    return request.json()
+
+    try:
+        request = requests.get(url,
+                               auth=(config.fieldbook_user, config.fieldbook_pass))
+        return request.json()
+
+    except requests.ConnectionError as e:
+        log.error('Cannot connect to Fieldbook')
+        log.error(e)
+
+    except Exception as e:
+        log.error(e)
 
 
 def add_record(sheet, new_record):
@@ -124,11 +137,14 @@ def add_sms_log(from_number, to_number, body, direction):
 
 
 def allocate_opportunity(opportunity_id, student_name):
+    log.debug("Attempting to update opportunity record with allocation")
+
     now = int(to_timestamp(datetime.datetime.utcnow()))
 
     opportunity = get_opportunity(opportunity_id)
 
     if opportunity['student'] is None:
+        log.debug('No student allocated for this opportunity yet')
 
         patch_object = {
             'student': student_name,
@@ -137,9 +153,12 @@ def allocate_opportunity(opportunity_id, student_name):
 
         update_record('opportunities', opportunity_id, patch_object)
 
+        log.debug('Record updated')
+
         return True
 
     else:
+        log.debug('Student already allocated for this opportunity')
         return False
 
 
