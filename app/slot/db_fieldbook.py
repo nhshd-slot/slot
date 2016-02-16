@@ -1,51 +1,31 @@
 import requests
 import config
 import datetime
+import utils
 import logging
-from flask import json
 from app import cache
+import fieldbook_py
 
 log = logging.getLogger('slot')
 
-
-def to_timestamp(dt):
-    return (dt - datetime.datetime(1970, 1, 1)).total_seconds()
+# Create an instance of a FieldbookClient using fieldbook_py
+fb = fieldbook_py.FieldbookClient(
+        config.fieldbook_user,
+        config.fieldbook_pass,
+        config.fieldbook_url)
 
 
 def get_sheet_all_records(sheet):
-    url = str.format('{0}{1}{2}', config.fieldbook_url, '/', sheet)
-    print(url)
-
-    try:
-        request = requests.get(url,
-                               auth=(config.fieldbook_user, config.fieldbook_pass))
-        return request.json()
-
-    except requests.ConnectionError as e:
-        log.error('Cannot connect to Fieldbook')
-        log.error(e)
-
-    except Exception as e:
-        log.error(e)
+    return fb.get_rows(sheet)
 
 
 def add_record(sheet, new_record):
-    url = str.format('{0}{1}{2}', config.fieldbook_url, '/', sheet)
-    print(url)
-    request = requests.post(url, auth=(config.fieldbook_user, config.fieldbook_pass), json = new_record)
-    print(request.status_code)
-    result = json.loads(request.text)
-    print(result)
+    result = fb.add_row(sheet, new_record)
     return result
 
 
 def update_record(sheet, patch_id, patch):
-    url = str.format('{0}/{1}/{2}', config.fieldbook_url, sheet, patch_id)
-    print(url)
-    request = requests.patch(url, auth=(config.fieldbook_user, config.fieldbook_pass), json = patch)
-    print(request.status_code)
-    result = json.loads(request.text)
-    print(result)
+    result = fb.update_row(sheet, patch_id, patch)
     return result
 
 
@@ -84,12 +64,13 @@ def get_all_opportunities():
             opportunity["status"] = "Not Attended"
         elif opportunity["student"]:
             opportunity["status"] = "Accepted"
-        elif to_timestamp(datetime.datetime.utcnow()) > int(opportunity["expiry_time"]):
+        elif utils.to_timestamp(datetime.datetime.utcnow()) > int(opportunity["expiry_time"]):
             opportunity["status"] = "Expired"
         else:
             opportunity["status"] = "Offered"
 
         opportunity["time"] = datetime.datetime.fromtimestamp(opportunity["time_sent"])
+
     return all_opportunities
 
 
@@ -106,7 +87,7 @@ def add_opportunity(op):
     print(op)
     new_op = {}
 
-    now = to_timestamp(datetime.datetime.utcnow())
+    now = utils.to_timestamp(datetime.datetime.utcnow())
 
     new_op['teacher'] = op['doctor']
     new_op['skill'] = op['procedure']
@@ -120,8 +101,24 @@ def add_opportunity(op):
     return new_id
 
 
+def add_offer(ref_id, messages_sent, message_ref):
+    new_offer = {}
+    now = utils.ticks_now()
+
+    new_offer['time_sent'] = now
+    new_offer['opportunity_id'] = ref_id
+    new_offer['response_code'] = message_ref
+    new_offer['no_of_offers_made'] = messages_sent
+    new_offer['status'] = 'AWAITING_RESPONSE'
+    print(new_offer)
+
+    result = fb.add_row('offers', new_offer)
+    print(result)
+    return result
+
+
 def add_sms_log(from_number, to_number, body, direction):
-    now = int(to_timestamp(datetime.datetime.utcnow()))
+    now = int(utils.to_timestamp(datetime.datetime.utcnow()))
 
     new_sms_log = {
         'timestamp': now,
@@ -139,7 +136,7 @@ def add_sms_log(from_number, to_number, body, direction):
 def allocate_opportunity(opportunity_id, student_name):
     log.debug("Attempting to update opportunity record with allocation")
 
-    now = int(to_timestamp(datetime.datetime.utcnow()))
+    now = int(utils.to_timestamp(datetime.datetime.utcnow()))
 
     opportunity = get_opportunity(opportunity_id)
 
