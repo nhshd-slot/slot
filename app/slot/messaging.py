@@ -6,7 +6,7 @@ from app.slot import db_fieldbook as fieldbook, sms_creator
 from bg_worker import conn
 from rq import Queue
 
-log = logging.getLogger('slot')
+logger = logging.getLogger('slot')
 
 q = Queue(connection=conn)
 
@@ -40,7 +40,7 @@ def remove_unique_ref(ref):
     list_of_opportunities.pop(str(ref), None)
 
 
-def broadcast_procedure(procedure, location, duration, doctor, ref_id, demo_mobiles=None):
+def broadcast_procedure(procedure, location, duration, doctor, ref_id):
     message_ref = get_friendly_ref(ref_id)
     print(str.format("Ref is {0}", ref_id))
     message = sms_creator.new_procedure_message(procedure, location, duration, doctor, message_ref)
@@ -48,51 +48,44 @@ def broadcast_procedure(procedure, location, duration, doctor, ref_id, demo_mobi
     recipients = fieldbook.get_students()
     print(recipients)
 
-    if demo_mobiles:
-        for demo_mobile in demo_mobiles:
-            if demo_mobile:
-                print("Queuing SMS")
-                print(demo_mobile)
-                result = q.enqueue(app.slot.sms_twilio.send_sms, demo_mobile, message)
+    message_count = 0
 
-    else:
-        for recipient in recipients:
-            print("Queuing SMS")
-            print(recipient)
-            result = q.enqueue(app.slot.sms_twilio.send_sms, recipient['mobile_number'], message)
+    for recipient in recipients:
+        print("Queuing SMS")
+        print(recipient)
+        result = q.enqueue(app.slot.sms_twilio.send_sms, recipient['mobile_number'], message)
+        message_count += 1
+
+    return message_count, message_ref
 
 
 def request_procedure(mobile, friendly_ref):
     try:
         opportunity = [d for d in list_of_opportunities if d['ref'] == int(friendly_ref)]
         opportunity_id = int(opportunity[0]['id'])
-        print(str.format("Opportunity ID is {0}", opportunity_id))
+        logger.debug(str.format("Opportunity ID is {0}", opportunity_id))
 
         students = fieldbook.get_students()
         print(students)
         int_mobile = int(mobile)
         print(int_mobile)
 
-        if False:
-            print("Processing in demo mode so will use partially-redacted mobile number as name")
-            student_name = str.format("XXXXX XXX{0}", mobile[-3:])
+        # student_name = str.format("XXXXX XXX{0}", mobile[-3:])
 
-        else:
-            print("Processing in live mode")
-            try:
-                for student in students:
-                    print(student)
-                    print(student['mobile_number'])
-                    if student['mobile_number'] == int_mobile:
-                        student_name = student['name']
-                        print(student_name)
+        try:
+            for student in students:
+                print(student)
+                print(student['mobile_number'])
+                if student['mobile_number'] == int_mobile:
+                    student_name = student['name']
+                    print(student_name)
 
-                if not student_name:
-                    raise Exception('Student not found')
+            if not student_name:
+                raise Exception('Student not found')
 
-            except Exception as e:
-                print(e)
-                student_name = 'Unknown Student'
+        except Exception as e:
+            print(e)
+            student_name = 'Unknown Student'
 
         result = fieldbook.allocate_opportunity(opportunity_id, student_name)
         print(str.format("Result of database commit was {0}", result))

@@ -8,15 +8,13 @@ from flask import request, redirect, render_template, json
 from app import app
 import config
 from auth import requires_auth
-from app.slot import db_fieldbook as fieldbook, messaging
+from app.slot import db_fieldbook, messaging
+import utils
 
 
-@app.route('/')
-@app.route('/dashboard')
-@requires_auth
 def index():
 
-    ops = fieldbook.get_all_opportunities()
+    ops = db_fieldbook.get_all_opportunities()
 
     for op in ops:
         if op["status"] == "Accepted":
@@ -30,13 +28,11 @@ def index():
         elif op["status"] == "Not Attended":
             op["class"] = "active"
 
-        op["remaining_mins"] = int(int(op["expiry_time"] - fieldbook.to_timestamp(datetime.datetime.utcnow())) / 60)
+        op["remaining_mins"] = int(int(op["expiry_time"] - utils.to_timestamp(datetime.datetime.utcnow())) / 60)
 
-    return render_template('dashboard.html', ops = ops)
+    return render_template('dashboard.html', ops=ops)
 
 
-@app.route('/new', methods=['GET', 'POST'])
-@requires_auth
 def render_new_procedure_form():
     if request.method == 'POST':
         print(request.form)
@@ -45,54 +41,36 @@ def render_new_procedure_form():
         opportunity_location = request.form['location']
         opportunity_duration = request.form['duration']
 
-        if config.demo_mode:
-            opportunity_mobile1 = request.form['mobile_number1']
-            opportunity_mobile2 = request.form['mobile_number2']
-
-            opportunity = dict({
-                'doctor': opportunity_doctor,
-                'procedure': opportunity_procedure,
-                'location': opportunity_location,
-                'duration': opportunity_duration,
-                'mobile1': opportunity_mobile1,
-                'mobile2': opportunity_mobile2
-            })
-
-            demo_mobiles = [opportunity_mobile1, opportunity_mobile2]
-
-        else:
-            opportunity = dict({
-                'doctor': opportunity_doctor,
-                'procedure': opportunity_procedure,
-                'location': opportunity_location,
-                'duration': opportunity_duration
-            })
-
-            demo_mobiles = None
+        opportunity = {
+            'doctor': opportunity_doctor,
+            'procedure': opportunity_procedure,
+            'location': opportunity_location,
+            'duration': opportunity_duration
+        }
 
         print(opportunity)
-        ref_id = fieldbook.add_opportunity(opportunity)
+        ref_id = db_fieldbook.add_opportunity(opportunity)
 
-        messaging.broadcast_procedure(opportunity_procedure,
-                                      opportunity_location,
-                                      opportunity_duration,
-                                      opportunity_doctor,
-                                      ref_id,
-                                      demo_mobiles)
+        number_messages_sent, message_ref = messaging.broadcast_procedure(opportunity_procedure,
+                                                                          opportunity_location,
+                                                                          opportunity_duration,
+                                                                          opportunity_doctor,
+                                                                          ref_id)
+
+        offer = db_fieldbook.add_offer(ref_id, number_messages_sent, message_ref)
+        print(offer['id'])
 
         print(json.dumps(opportunity))
 
         return redirect('/dashboard', code=302)
 
     else:
-        procedures = fieldbook.get_procedures()
-        locations = fieldbook.get_locations()
-        timeframes = fieldbook.get_timeframes()
-        doctors = fieldbook.get_doctors()
-        demo_mode2 = config.demo_mode
-        print(str.format("Demo mode is: {0}", demo_mode2))
-        return render_template('new_procedure.html', procedures = procedures, locations = locations,
-                                     timeframes = timeframes, doctors = doctors, demo_mode = demo_mode2)
+        procedures = db_fieldbook.get_procedures()
+        locations = db_fieldbook.get_locations()
+        timeframes = db_fieldbook.get_timeframes()
+        doctors = db_fieldbook.get_doctors()
+        return render_template('new_procedure.html', procedures=procedures, locations=locations,
+                               timeframes=timeframes, doctors=doctors)
 
 
 # Endpoint for receiving SMS messages from Twilio
@@ -114,7 +92,7 @@ def receive_sms():
 
     messaging.request_procedure(sms['mobile'], sms['message'])
 
-    fieldbook.add_sms_log(sms['mobile'], sms['service_number'], sms['message'], 'IN')
+    db_fieldbook.add_sms_log(sms['mobile'], sms['service_number'], sms['message'], 'IN')
 
     return '<Response></Response>'
 
@@ -133,7 +111,7 @@ def complete_procedure():
     print(str(completed_id))
     print(str(attended_status))
 
-    fieldbook.complete_opportunity(completed_id, attended_status)
+    db_fieldbook.complete_opportunity(completed_id, attended_status)
     return redirect('/dashboard', code=302)
 
 
@@ -141,7 +119,6 @@ if __name__ == '__main__':
     app.debug = config.debug_mode
     port = int(os.environ.get("PORT", 5000))
     print(str.format("Debug Mode is: {0}", app.debug))
-    print(str.format("Demo Mode is: {0}", config.demo_mode))
     app.run(
         host="0.0.0.0",
         port = port
