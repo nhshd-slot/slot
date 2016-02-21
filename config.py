@@ -13,8 +13,8 @@ except ImportError:
     fieldbook_pass = os.environ.get('FIELDBOOK_PASS', '')
     fieldbook_url = os.environ.get('FIELDBOOK_URL', '')
 
-    website_user = os.environ.get('WEBSITE_USER', '')
-    website_pass = os.environ.get('WEBSITE_PASS', '')
+    website_user = os.environ.get('WEBSITE_USER', 'user')
+    website_pass = os.environ.get('WEBSITE_PASS', 'pass')
 
     CACHE_REDIS_URL = os.getenv('REDISTOGO_URL', 'redis://localhost:6379')
     CACHE_DEFAULT_TIMEOUT = int(os.getenv('CACHE_DEFAULT_TIMEOUT', '300'))
