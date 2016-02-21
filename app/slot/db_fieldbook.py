@@ -16,7 +16,7 @@ fb = fieldbook_py.FieldbookClient(
 
 
 def get_sheet_all_records(sheet):
-    return fb.get_rows(sheet)
+    return fb.get_all_rows(sheet)
 
 
 def add_record(sheet, new_record):
