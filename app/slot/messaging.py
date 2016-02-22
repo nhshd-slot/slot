@@ -41,9 +41,9 @@ def remove_unique_ref(ref):
 
 
 def broadcast_procedure(procedure, location, duration, doctor, ref_id):
-    message_ref = get_friendly_ref(ref_id)
+    response_code = ref_id
     print(str.format("Ref is {0}", ref_id))
-    message = sms_creator.new_procedure_message(procedure, location, duration, doctor, message_ref)
+    message = sms_creator.new_procedure_message(procedure, location, duration, doctor, response_code)
 
     recipients = fieldbook.get_students()
     print(recipients)
@@ -56,14 +56,13 @@ def broadcast_procedure(procedure, location, duration, doctor, ref_id):
         result = q.enqueue(app.slot.sms_twilio.send_sms, recipient['mobile_number'], message)
         message_count += 1
 
-    return message_count, message_ref
+    return message_count, response_code
 
 
-def request_procedure(mobile, friendly_ref):
+def request_procedure(mobile, response_code):
     try:
-        opportunity = [d for d in list_of_opportunities if d['ref'] == int(friendly_ref)]
-        opportunity_id = int(opportunity[0]['id'])
-        logger.debug(str.format("Opportunity ID is {0}", opportunity_id))
+        offer = fieldbook.get_opportunity_status(response_code)
+        logger.debug('Opportunity: {0}'.format(offer))
 
         students = fieldbook.get_students()
         print(students)
@@ -87,9 +86,9 @@ def request_procedure(mobile, friendly_ref):
             print(e)
             student_name = 'Unknown Student'
 
-        result = fieldbook.allocate_opportunity(opportunity_id, student_name)
+        result = fieldbook.allocate_opportunity(offer['opportunity_id'], student_name)
         print(str.format("Result of database commit was {0}", result))
-        this_opportunity = fieldbook.get_opportunity(opportunity_id)
+        this_opportunity = fieldbook.get_opportunity(offer['opportunity_id'])
         print(str.format("This opportunity is {0}", this_opportunity))
 
         if result is False:
