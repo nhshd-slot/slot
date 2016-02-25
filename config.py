@@ -19,6 +19,8 @@ except ImportError:
     CACHE_REDIS_URL = os.getenv('REDISTOGO_URL', 'redis://localhost:6379')
     CACHE_DEFAULT_TIMEOUT = int(os.getenv('CACHE_DEFAULT_TIMEOUT', '300'))
 
+    REDIS_URL = os.getenv('REDISTOGO_URL', 'redis://localhost:6379')
+
     # We need the following variables to be boolean so we just check for a value against the environment variable
     # to mean True and then take absence of either a value or the variable to mean False
 
