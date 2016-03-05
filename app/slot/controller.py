@@ -73,10 +73,11 @@ def render_new_procedure_form():
 # @requires_auth
 def receive_sms():
 
-    # TODO: Convert to dict literal
-    sms = dict(service_number=str(request.form['To']),
-               mobile=str(request.form['From']),
-               message=str(request.form['Body']))
+    sms = {
+        'service_number': str(request.form['To']),
+        'mobile': str(request.form['From']),
+        'message': str(request.form['Body'])
+    }
 
     print(str.format("Received SMS: \n"
                      "Service Number: {0}\n"
