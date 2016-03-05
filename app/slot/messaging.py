@@ -13,33 +13,6 @@ q = Queue(connection=conn)
 list_of_opportunities = []
 
 
-# def get_friendly_ref(id):
-#     if not list_of_opportunities:
-#         new_ref = 1
-#         new_opportunity = dict(id=str(id), ref=new_ref)
-#         list_of_opportunities.append(new_opportunity)
-#         print(str.format("New ref is {0}", new_ref))
-#         print(list_of_opportunities)
-#         return new_ref
-#
-#     else:
-#         temp_list = []
-#         for opp in list_of_opportunities:
-#             temp_list.append(opp['ref'])
-#
-#         new_ref = max(temp_list) + 1
-#         new_opportunity = dict(id=str(id), ref=new_ref)
-#         list_of_opportunities.append(new_opportunity)
-#
-#         print(str.format("New opportunity added {0}", new_opportunity))
-#         return new_ref
-#
-#
-# def remove_unique_ref(ref):
-#     print(str.format("Removing ref {0}", ref))
-#     list_of_opportunities.pop(str(ref), None)
-
-
 def broadcast_procedure(procedure, location, duration, doctor, ref_id):
     response_code = ref_id
     print(str.format("Ref is {0}", ref_id))
