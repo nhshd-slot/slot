@@ -1,10 +1,13 @@
-import requests
-import config
-import datetime
-import utils
 import logging
-from app import cache
+import datetime
+
+import requests
 import fieldbook_py
+
+import config
+import app.slot.utils as utils
+from app import cache
+
 
 log = logging.getLogger('slot')
 
@@ -83,6 +86,19 @@ def get_opportunity(opportunity_id):
     return request.json()
 
 
+def get_opportunity_status(opportunity_id):
+    """A function to check the status of a particular opportunity by its ID"""
+    log.debug('Checking status of opportunity {opp_id}'.format(opp_id=opportunity_id))
+    # url = str.format('{0}/{1}/{2}', config.fieldbook_url, 'opportunities', opportunity_id)
+    # log.debug('Resource URL is: {url}'.format(url=url))
+    request = fb.get_all_rows('offers',
+                              include_fields=('status','opportunity_id'),
+                              opportunity_id=opportunity_id)
+    log.debug('Opportunity Status: {opp}'.format(opp=request))
+    log.debug('Opportunity Status: {opp}'.format(opp=request[0]))
+    return request[0]
+
+
 def add_opportunity(op):
     print(op)
     new_op = {}
@@ -101,15 +117,14 @@ def add_opportunity(op):
     return new_id
 
 
-def add_offer(ref_id, messages_sent, message_ref):
+def add_offer(ref_id, messages_sent):
     new_offer = {}
     now = utils.ticks_now()
 
     new_offer['time_sent'] = now
     new_offer['opportunity_id'] = ref_id
-    new_offer['response_code'] = message_ref
     new_offer['no_of_offers_made'] = messages_sent
-    new_offer['status'] = 'AWAITING_RESPONSE'
+    new_offer['status'] = 'UNALLOCATED'
     print(new_offer)
 
     result = fb.add_row('offers', new_offer)

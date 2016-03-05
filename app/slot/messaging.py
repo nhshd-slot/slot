@@ -13,37 +13,10 @@ q = Queue(connection=conn)
 list_of_opportunities = []
 
 
-def get_friendly_ref(id):
-    if not list_of_opportunities:
-        new_ref = 1
-        new_opportunity = dict(id=str(id), ref=new_ref)
-        list_of_opportunities.append(new_opportunity)
-        print(str.format("New ref is {0}", new_ref))
-        print(list_of_opportunities)
-        return new_ref
-
-    else:
-        temp_list = []
-        for opp in list_of_opportunities:
-            temp_list.append(opp['ref'])
-
-        new_ref = max(temp_list) + 1
-        new_opportunity = dict(id=str(id), ref=new_ref)
-        list_of_opportunities.append(new_opportunity)
-
-        print(str.format("New opportunity added {0}", new_opportunity))
-        return new_ref
-
-
-def remove_unique_ref(ref):
-    print(str.format("Removing ref {0}", ref))
-    list_of_opportunities.pop(str(ref), None)
-
-
 def broadcast_procedure(procedure, location, duration, doctor, ref_id):
-    message_ref = get_friendly_ref(ref_id)
+    response_code = ref_id
     print(str.format("Ref is {0}", ref_id))
-    message = sms_creator.new_procedure_message(procedure, location, duration, doctor, message_ref)
+    message = sms_creator.new_procedure_message(procedure, location, duration, doctor, response_code)
 
     recipients = fieldbook.get_students()
     print(recipients)
@@ -56,26 +29,23 @@ def broadcast_procedure(procedure, location, duration, doctor, ref_id):
         result = q.enqueue(app.slot.sms_twilio.send_sms, recipient['mobile_number'], message)
         message_count += 1
 
-    return message_count, message_ref
+    return message_count, response_code
 
 
-def request_procedure(mobile, friendly_ref):
+def request_procedure(response_mobile, response_code):
     try:
-        opportunity = [d for d in list_of_opportunities if d['ref'] == int(friendly_ref)]
-        opportunity_id = int(opportunity[0]['id'])
-        logger.debug(str.format("Opportunity ID is {0}", opportunity_id))
+        offer = fieldbook.get_opportunity_status(response_code)
+        logger.debug('Opportunity: {0}'.format(offer))
 
         students = fieldbook.get_students()
-        print(students)
-        int_mobile = int(mobile)
-        print(int_mobile)
+        logger.debug(students)
 
-        # student_name = str.format("XXXXX XXX{0}", mobile[-3:])
+        int_mobile = mobile_number_string_to_int(response_mobile)
+        logger.debug(int_mobile)
 
         try:
             for student in students:
-                print(student)
-                print(student['mobile_number'])
+                logger.debug(student)
                 if student['mobile_number'] == int_mobile:
                     student_name = student['name']
                     print(student_name)
@@ -84,37 +54,48 @@ def request_procedure(mobile, friendly_ref):
                 raise Exception('Student not found')
 
         except Exception as e:
-            print(e)
+            logger.exception('Error retrieving student', exc_info=True)
             student_name = 'Unknown Student'
 
-        result = fieldbook.allocate_opportunity(opportunity_id, student_name)
+        result = fieldbook.allocate_opportunity(offer['opportunity_id'], student_name)
         print(str.format("Result of database commit was {0}", result))
-        this_opportunity = fieldbook.get_opportunity(opportunity_id)
+        this_opportunity = fieldbook.get_opportunity(offer['opportunity_id'])
         print(str.format("This opportunity is {0}", this_opportunity))
 
         if result is False:
             q.enqueue(app.slot.sms_twilio.send_sms,
-                               mobile,
-                               "Sorry - this learning opportunity has been taken by another student. ")
+                               response_mobile,
+                               'Sorry - this learning opportunity has been taken by another student.')
 
         elif result is True:
-            message = str.format("Attend {0} by {1}.\n\n"
-                                 "Ask for {2} to complete this procedure.\n\n"
+            message = str.format('Attend {0} by {1}.\n\n'
+                                 'Ask for {2} to complete this procedure.\n\n'
                                  "This learning opportunity has been reserved for you.",
                                  this_opportunity['location'],
                                  datetime.datetime.fromtimestamp(this_opportunity['expiry_time']).strftime("%H:%M"),
                                  this_opportunity['teacher'])
 
             q.enqueue(app.slot.sms_twilio.send_sms,
-                               mobile,
+                               response_mobile,
                                message)
 
     except IndexError as e:
         print(e)
-        print("Opportunity not found")
+        print('Opportunity not found')
         q.enqueue(app.slot.sms_twilio.send_sms,
-                           mobile,
-                           "Sorry - this opportunity is not available.")
+                  response_mobile,
+                  'Sorry - this opportunity is not available.')
 
     except Exception as e:
         print(e)
+
+
+# TODO: Add some extra validation and data-cleansing logic to this
+# Converts mobile numbers from strings to integers
+def mobile_number_string_to_int(mobile_string):
+    return int(mobile_string)
+
+
+# Takes a mobile number as a string, and redacts all but the last 3 digits
+def redact_mobile_number(mobile_string):
+    return str.format('XXXXX XXX{0}', mobile_string[-3:])
