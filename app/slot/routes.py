@@ -15,3 +15,9 @@ def index():
 @requires_auth
 def render_new_procedure_form():
     return con.render_new_procedure_form()
+
+
+@app.route('/sms', methods=['POST'])
+@requires_auth
+def receive_sms():
+    return con.receive_sms()

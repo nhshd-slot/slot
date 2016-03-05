@@ -69,8 +69,8 @@ def render_new_procedure_form():
 
 
 # Endpoint for receiving SMS messages from Twilio
-@app.route('/sms', methods=['POST'])
-@requires_auth
+# @app.route('/sms', methods=['POST'])
+# @requires_auth
 def receive_sms():
 
     # TODO: Convert to dict literal
