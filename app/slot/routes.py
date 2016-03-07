@@ -14,7 +14,7 @@ def index():
 
 
 @app.route('/new', methods=['GET', 'POST'])
-@requires_auth
+@login_required
 def render_new_procedure_form():
     return con.render_new_procedure_form()
 

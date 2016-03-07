@@ -3,10 +3,11 @@ import datetime
 import os
 
 from flask import request, redirect, render_template, json
+from flask.ext.login import login_required
 
 from app import app
 import config
-from auth import requires_auth
+from auth import requires_basic_auth
 from app.slot import db_fieldbook, messaging
 import utils
 
@@ -69,7 +70,6 @@ def render_new_procedure_form():
 
 
 def receive_sms():
-
     sms = {
         'service_number': str(request.form['To']),
         'mobile': str(request.form['From']),
@@ -92,7 +92,7 @@ def receive_sms():
 
 
 @app.route('/complete', methods=['POST'])
-@requires_auth
+@login_required
 def complete_procedure():
 
     completed_id = request.form['id']
