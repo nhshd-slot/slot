@@ -16,6 +16,9 @@ except ImportError:
     website_user = os.environ.get('WEBSITE_USER', 'user')
     website_pass = os.environ.get('WEBSITE_PASS', 'pass')
 
+    SECRET_KEY = os.environ.get('SECRET_KEY', 'secret_key')
+    SESSION_COOKIE_NAME = os.environ.get('SESSION_COOKIE_NAME', 'slot-session')
+
     CACHE_REDIS_URL = os.getenv('REDISTOGO_URL', 'redis://localhost:6379')
     CACHE_DEFAULT_TIMEOUT = int(os.getenv('CACHE_DEFAULT_TIMEOUT', '300'))
 
