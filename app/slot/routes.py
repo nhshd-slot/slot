@@ -2,11 +2,13 @@ from app import app
 from app.slot import controller as con
 import config
 from auth import requires_auth
+from flask import render_template
+from flask.ext.login import login_required
 
 
-@app.route('/')
 @app.route('/dashboard')
-@requires_auth
+#  @requires_auth
+@login_required
 def index():
     return con.index()
 
