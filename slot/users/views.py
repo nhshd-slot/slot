@@ -3,7 +3,7 @@ from flask import flash, redirect, render_template, request, url_for, Blueprint
 from flask_login import login_user, login_required, logout_user
 
 import controller as user_controller
-from slot.models import User
+from slot.users.models import User
 from .forms import LoginForm
 
 #    config    #
