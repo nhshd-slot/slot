@@ -6,7 +6,8 @@ import requests
 
 import config
 import slot.utils as utils
-from app import cache
+from slot.main import cache
+
 
 log = logging.getLogger('slot')
 

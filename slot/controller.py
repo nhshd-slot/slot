@@ -4,11 +4,10 @@ import os
 
 from slot import db_fieldbook
 from flask import request, redirect, render_template, json
-from flask_login import login_required
 
 import config
 import utils
-from slot import app
+from slot.main import app
 from slot import messaging
 
 
@@ -91,8 +90,6 @@ def receive_sms():
     return '<Response></Response>'
 
 
-@app.route('/complete', methods=['POST'])
-@login_required
 def complete_procedure():
 
     completed_id = request.form['id']

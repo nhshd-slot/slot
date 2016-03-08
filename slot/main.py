@@ -19,15 +19,17 @@ with app.app_context():
     cache.clear()
 
 from slot.users.views import users_blueprint
+from slot.users.models import User
+import routes
 
 app.register_blueprint(users_blueprint)
-from slot.users.models import User
 
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = "users.login"
 
-
+# TODO: Need to update this to retrieve a user from the actual database
 @login_manager.user_loader
 def load_user(user_id):
+    print("Loading user")
     return User('slot', 'test')

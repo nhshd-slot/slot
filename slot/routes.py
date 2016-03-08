@@ -1,7 +1,7 @@
 from slot import basic_auth
 from flask_login import login_required
 
-from slot import app
+from slot.main import app
 from slot import controller as con
 
 
@@ -22,3 +22,9 @@ def render_new_procedure_form():
 @basic_auth.requires_auth
 def receive_sms():
     return con.receive_sms()
+
+
+@app.route('/complete', methods=['POST'])
+@login_required
+def complete_procedure():
+    return con.complete_procedure()
