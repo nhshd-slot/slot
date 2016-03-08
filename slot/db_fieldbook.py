@@ -1,13 +1,12 @@
-import logging
 import datetime
+import logging
 
-import requests
 import fieldbook_py
+import requests
 
 import config
-import app.slot.utils as utils
+import slot.utils as utils
 from app import cache
-
 
 log = logging.getLogger('slot')
 

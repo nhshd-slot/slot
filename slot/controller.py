@@ -2,14 +2,14 @@
 import datetime
 import os
 
+from slot import db_fieldbook
 from flask import request, redirect, render_template, json
-from flask.ext.login import login_required
+from flask_login import login_required
 
-from app import app
 import config
-from auth import requires_basic_auth
-from app.slot import db_fieldbook, messaging
 import utils
+from slot import app
+from slot import messaging
 
 
 def index():

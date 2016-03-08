@@ -1,10 +1,11 @@
 import datetime
 import logging
 
-import app.slot.sms_twilio
-from app.slot import db_fieldbook as fieldbook, sms_creator
-from bg_worker import conn
 from rq import Queue
+
+import slot.sms_twilio
+from bg_worker import conn
+from slot import db_fieldbook as fieldbook, sms_creator
 
 logger = logging.getLogger('slot')
 
@@ -26,7 +27,7 @@ def broadcast_procedure(procedure, location, duration, doctor, ref_id):
     for recipient in recipients:
         print("Queuing SMS")
         print(recipient)
-        result = q.enqueue(app.slot.sms_twilio.send_sms, recipient['mobile_number'], message)
+        result = q.enqueue(slot.sms_twilio.send_sms, recipient['mobile_number'], message)
         message_count += 1
 
     return message_count, response_code
@@ -63,8 +64,8 @@ def request_procedure(response_mobile, response_code):
         print(str.format("This opportunity is {0}", this_opportunity))
 
         if result is False:
-            q.enqueue(app.slot.sms_twilio.send_sms,
-                               response_mobile,
+            q.enqueue(slot.sms_twilio.send_sms,
+                      response_mobile,
                                'Sorry - this learning opportunity has been taken by another student.')
 
         elif result is True:
@@ -75,14 +76,14 @@ def request_procedure(response_mobile, response_code):
                                  datetime.datetime.fromtimestamp(this_opportunity['expiry_time']).strftime("%H:%M"),
                                  this_opportunity['teacher'])
 
-            q.enqueue(app.slot.sms_twilio.send_sms,
-                               response_mobile,
-                               message)
+            q.enqueue(slot.sms_twilio.send_sms,
+                      response_mobile,
+                      message)
 
     except IndexError as e:
         print(e)
         print('Opportunity not found')
-        q.enqueue(app.slot.sms_twilio.send_sms,
+        q.enqueue(slot.sms_twilio.send_sms,
                   response_mobile,
                   'Sorry - this opportunity is not available.')
 

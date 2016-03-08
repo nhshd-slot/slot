@@ -1,4 +1,5 @@
 from functools import wraps
+
 from flask import Response, request
 
 import config
@@ -19,7 +20,7 @@ def authenticate():
         {'WWW-Authenticate': 'Basic realm="Login Required"'})
 
 
-def requires_basic_auth(f):
+def requires_auth(f):
     @wraps(f)
     def decorated(*args, **kwargs):
         auth = request.authorization

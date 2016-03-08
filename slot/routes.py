@@ -1,9 +1,8 @@
-from app import app
-from app.slot import controller as con
-import config
-from auth import requires_basic_auth
-from flask import render_template
-from flask.ext.login import login_required
+from slot import basic_auth
+from flask_login import login_required
+
+from slot import app
+from slot import controller as con
 
 
 @app.route('/')
@@ -20,6 +19,6 @@ def render_new_procedure_form():
 
 
 @app.route('/sms', methods=['POST'])
-@requires_basic_auth
+@basic_auth.requires_auth
 def receive_sms():
     return con.receive_sms()

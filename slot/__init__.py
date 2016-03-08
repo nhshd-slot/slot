@@ -8,10 +8,8 @@ ch.setLevel(logging.DEBUG)
 log.addHandler(ch)
 
 from flask import Flask
-from flask.ext.cache import Cache
-from flask.ext.login import LoginManager
-from app.slot.models import User
-
+from flask_cache import Cache
+from flask_login import LoginManager
 
 app = Flask(__name__)
 app.config.from_object('config')
@@ -23,12 +21,13 @@ login_manager.init_app(app)
 with app.app_context():
     cache.clear()
 
-from app.slot import routes, controller
-from app.slot.users.views import users_blueprint
+from slot.users.views import users_blueprint
+import routes
+import controller
 
 app.register_blueprint(users_blueprint)
 
-from app.slot.models import User
+from slot.models import User
 
 login_manager.login_view = "users.login"
 
@@ -36,4 +35,3 @@ login_manager.login_view = "users.login"
 @login_manager.user_loader
 def load_user(user_id):
     return User('slot', 'test')
-

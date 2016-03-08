@@ -1,6 +1,6 @@
 import os
 
-from app import app
+from slot import app
 
 # Lists all routing rules registered on the Flask app
 for rule in app.url_map.iter_rules():
