@@ -13,8 +13,8 @@ except ImportError:
     fieldbook_pass = os.environ.get('FIELDBOOK_PASS', '')
     fieldbook_url = os.environ.get('FIELDBOOK_URL', '')
 
-    website_user = os.environ.get('WEBSITE_USER', 'user')
-    website_pass = os.environ.get('WEBSITE_PASS', 'pass')
+    basic_auth_user = os.environ.get('BASIC_AUTH_USER', 'user')
+    basic_auth_pass = os.environ.get('BASIC_AUTH_PASS', 'pass')
 
     SECRET_KEY = os.environ.get('SECRET_KEY', 'secret_key')
     SESSION_COOKIE_NAME = os.environ.get('SESSION_COOKIE_NAME', 'slot-session')
