@@ -24,7 +24,7 @@ def login():
                 user = User('slot', 'test')
                 login_user(user)
                 flash('You were logged in.')
-                return redirect(url_for('index'))
+                return redirect(url_for('dashboard'))
             else:
                 flash('Invalid credentials. Try again.')
     return render_template('login.html', form=form, error=error)
