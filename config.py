@@ -16,6 +16,8 @@ except ImportError:
     basic_auth_user = os.environ.get('BASIC_AUTH_USER', 'user')
     basic_auth_pass = os.environ.get('BASIC_AUTH_PASS', 'pass')
 
+    dash_refresh_timeout = int(os.environ.get('DASH_REFRESH_TIMEOUT', 60))
+
     SECRET_KEY = os.environ.get('SECRET_KEY', 'secret_key')
     SESSION_COOKIE_NAME = os.environ.get('SESSION_COOKIE_NAME', 'slot-session')
 

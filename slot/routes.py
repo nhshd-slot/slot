@@ -8,8 +8,8 @@ from slot import controller as con
 @app.route('/')
 @app.route('/dashboard')
 @login_required
-def index():
-    return con.index()
+def dashboard():
+    return con.dashboard()
 
 
 @app.route('/new', methods=['GET', 'POST'])

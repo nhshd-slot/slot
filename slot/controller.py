@@ -11,7 +11,7 @@ from slot.main import app
 from slot import messaging
 
 
-def index():
+def dashboard():
     ops = db_fieldbook.get_all_opportunities()
     for op in ops:
         if op["status"] == "Accepted":
@@ -25,7 +25,7 @@ def index():
         elif op["status"] == "Not Attended":
             op["class"] = "active"
         op["remaining_mins"] = int(int(op["expiry_time"] - utils.to_timestamp(datetime.datetime.utcnow())) / 60)
-    return render_template('dashboard.html', ops=ops)
+    return render_template('dashboard.html', ops=ops, dash_refresh_timeout=config.dash_refresh_timeout)
 
 
 def render_new_procedure_form():
