@@ -3,6 +3,7 @@ import logging
 from flask import Flask
 from flask_cache import Cache
 from flask_login import LoginManager
+from flask_sslify import SSLify
 
 # Set up logging
 log = logging.getLogger('slot')
@@ -13,6 +14,7 @@ log.addHandler(ch)
 
 app = Flask(__name__)
 app.config.from_object('config')
+sslify = SSLify(app, age=300)
 cache = Cache(app, config={'CACHE_TYPE': 'redis'})
 
 with app.app_context():
