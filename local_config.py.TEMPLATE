@@ -1,4 +1,3 @@
-
 twilio_sid = 'xxxxx'
 twilio_token = 'xxxxx'
 twilio_number = 'xxxxx'
@@ -9,3 +8,12 @@ fieldbook_pass = 'xxxxx'
 
 debug_mode = True
 demo_mode = True
+
+website_user = 'slot'
+website_pass = 'slot'
+
+CACHE_REDIS_URL = 'redis://localhost:6379'
+REDIS_URL = 'redis://localhost:6379'
+
+SECRET_KEY = 'secret_key'
+SESSION_COOKIE_NAME = 'slot-dev-session-cookie'

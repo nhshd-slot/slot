@@ -1,21 +1,18 @@
 # 3rd Party Modules
 import datetime
-
 import os
+
+from slot import db_fieldbook
 from flask import request, redirect, render_template, json
 
-# Local Modules
-from app import app
 import config
-from auth import requires_auth
-from app.slot import db_fieldbook, messaging
 import utils
+from slot.main import app
+from slot import messaging
 
 
-def index():
-
+def dashboard():
     ops = db_fieldbook.get_all_opportunities()
-
     for op in ops:
         if op["status"] == "Accepted":
             op["class"] = "success"
@@ -27,10 +24,8 @@ def index():
             op["class"] = "active"
         elif op["status"] == "Not Attended":
             op["class"] = "active"
-
         op["remaining_mins"] = int(int(op["expiry_time"] - utils.to_timestamp(datetime.datetime.utcnow())) / 60)
-
-    return render_template('dashboard.html', ops=ops)
+    return render_template('dashboard.html', ops=ops, dash_refresh_timeout=config.dash_refresh_timeout)
 
 
 def render_new_procedure_form():
@@ -57,7 +52,7 @@ def render_new_procedure_form():
                                                                           opportunity_doctor,
                                                                           ref_id)
 
-        offer = db_fieldbook.add_offer(ref_id, number_messages_sent, message_ref)
+        offer = db_fieldbook.add_offer(ref_id, number_messages_sent)
         print(offer['id'])
 
         print(json.dumps(opportunity))
@@ -73,14 +68,12 @@ def render_new_procedure_form():
                                timeframes=timeframes, doctors=doctors)
 
 
-# Endpoint for receiving SMS messages from Twilio
-@app.route('/sms', methods=['POST'])
-@requires_auth
 def receive_sms():
-
-    sms = dict(service_number=str(request.form['To']),
-               mobile=str(request.form['From']),
-               message=str(request.form['Body']))
+    sms = {
+        'service_number': str(request.form['To']),
+        'mobile': str(request.form['From']),
+        'message': str(request.form['Body'])
+    }
 
     print(str.format("Received SMS: \n"
                      "Service Number: {0}\n"
@@ -97,8 +90,6 @@ def receive_sms():
     return '<Response></Response>'
 
 
-@app.route('/complete', methods=['POST'])
-@requires_auth
 def complete_procedure():
 
     completed_id = request.form['id']
