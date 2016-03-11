@@ -26,14 +26,14 @@
         {% endif %}
       </span>
     </p>
-    <button class="btn btn-sm btn-success" type="submit">Sign in</button>
+    <button class="btn btn-lg btn-success" type="submit">Sign in</button>
   </form>
     <p></p>
 {% with messages = get_flashed_messages() %}
   {% if messages %}
-    <ul class=flashes>
+    <ul class="list-unstyled">
     {% for message in messages %}
-      <li>{{ message }}</li>
+      <li class="bg-info"><h4>{{ message }}</h4></li>
     {% endfor %}
     </ul>
   {% endif %}
