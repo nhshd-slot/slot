@@ -57,7 +57,6 @@ def get_students():
     return [s for s in get_sheet_all_records('students')]
 
 
-@cache.cached(timeout=300)
 def get_user(username):
     print('get username')
     """Returns a user dictionary if a user with specified username is present in the database"""
