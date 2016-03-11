@@ -3,11 +3,26 @@
 {% block title %}Index{% endblock %}
 
 {% block content %}
+<meta http-equiv="refresh" content="{{dash_refresh_timeout}}">
 <div class="container">
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <ul class="list-unstyled">
+                {% for message in messages %}
+                    <li class="bg-info"><h4>{{ message }}</h4></li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
     <div class="nav-buttons">
-        <div class="nav-buttons">
-            <a href="/new" class="btn btn-lg btn-success" role="button">Add Opportunity</a>
-            <a href="/dashboard" class="btn btn-lg btn-info" role="button">Refresh</a>
+        <div class="row">
+            <div class="col-lg-8">
+                <a href="/new" class="btn btn-lg btn-success" role="button">Add Opportunity</a>
+                <a href="/dashboard" class="btn btn-lg btn-info" role="button">Refresh</a>
+            </div>
+            <div class="col-lg-4">
+                <a href="/logout" class="btn btn-lg btn-warning pull-right" role="button">Logout</a>
+            </div>
         </div>
     </div>
     <div class="page-title"><h2>Existing Learning Opportunities</h2></div>
@@ -87,7 +102,6 @@
                     </td>
                 </tr>
             {% endfor %}
-
         </table>
     </div>
 </div>

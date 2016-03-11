@@ -1,6 +1,7 @@
-import config
-from app.slot import db_fieldbook as fieldbook
 from twilio.rest import TwilioRestClient
+
+import config
+from slot import db_fieldbook as fieldbook
 
 client = TwilioRestClient(config.twilio_sid, config.twilio_token)
 
