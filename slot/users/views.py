@@ -19,14 +19,19 @@ def login():
     form = LoginForm(request.form)
     if request.method == 'POST':
         if form.validate_on_submit():
-            if user_controller.validate_credentials(request.form['username'],
-                                                    request.form['password']):
-                user = User('slot', 'test')
+
+            user = user_controller.return_user_if_valid_credentials(
+                request.form['username'],
+                request.form['password'])
+
+            if user:
                 login_user(user)
                 flash('You were logged in.')
                 return redirect(url_for('dashboard'))
+
             else:
                 flash('Invalid credentials. Try again.')
+
     return render_template('login.html', form=form, error=error)
 
 
