@@ -1,4 +1,4 @@
-import slot.messaging
+from context import slot
 
 
 class TestMessaging:
