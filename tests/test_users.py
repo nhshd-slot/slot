@@ -12,5 +12,5 @@ class TestUsers:
         assert result is False
 
     def test_convert_dict_to_user_instance_returns_valid_user_instance(self):
-        result = uc.convert_dict_to_user_instance({})
+        result = uc.return_user_instance_or_anonymous({})
         assert result
