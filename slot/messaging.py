@@ -1,5 +1,6 @@
 import datetime
 import logging
+from random import shuffle
 
 from rq import Queue
 
@@ -20,7 +21,7 @@ def broadcast_procedure(procedure, location, duration, doctor, ref_id):
     message = sms_creator.new_procedure_message(procedure, location, duration, doctor, response_code)
 
     recipients = fieldbook.get_students()
-    print(recipients)
+    shuffle(recipients)
 
     message_count = 0
 
