@@ -107,7 +107,7 @@ def get_opportunity_status(opportunity_id):
     # url = str.format('{0}/{1}/{2}', config.fieldbook_url, 'opportunities', opportunity_id)
     # log.debug('Resource URL is: {url}'.format(url=url))
     request = fb.get_all_rows('offers',
-                              include_fields=('status','opportunity_id'),
+                              include_fields=('status','opportunity_id', 'id'),
                               opportunity_id=opportunity_id)
     logger.debug('Opportunity Status: {opp}'.format(opp=request))
     logger.debug('Opportunity Status: {opp}'.format(opp=request[0]))

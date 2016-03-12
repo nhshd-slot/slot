@@ -80,6 +80,12 @@ def request_procedure(response_mobile, response_code):
                       response_mobile,
                       message)
 
+            patch = {'status': 'ALLOCATED'}
+            q.enqueue(fieldbook.update_record,
+                      'offers',
+                      offer['id'],
+                      patch)
+
     except IndexError as e:
         print(e)
         print('Opportunity not found')
