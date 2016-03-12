@@ -69,6 +69,12 @@ def request_procedure(response_mobile, response_code):
                       response_mobile,
                                'Sorry - this learning opportunity has been taken by another student.')
 
+            q.enqueue(fieldbook.add_response,
+                      offer['opportunity_id'],
+                      student_name,
+                      response_mobile,
+                      'not_successful')
+
         elif result is True:
             message = str.format('Attend {0} by {1}.\n\n'
                                  'Ask for {2} to complete this procedure.\n\n'
@@ -81,6 +87,12 @@ def request_procedure(response_mobile, response_code):
                       response_mobile,
                       message)
 
+            q.enqueue(fieldbook.add_response,
+                      offer['opportunity_id'],
+                      student_name,
+                      response_mobile,
+                      'successful')
+
             patch = {'status': 'ALLOCATED'}
             q.enqueue(fieldbook.update_record,
                       'offers',
@@ -90,9 +102,16 @@ def request_procedure(response_mobile, response_code):
     except IndexError as e:
         print(e)
         print('Opportunity not found')
+
         q.enqueue(slot.sms_twilio.send_sms,
                   response_mobile,
                   'Sorry - this opportunity is not available.')
+
+        q.enqueue(fieldbook.add_response,
+                  offer['opportunity_id'],
+                  student_name,
+                  response_mobile,
+                  'not_found')
 
     except Exception as e:
         print(e)

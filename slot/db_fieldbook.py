@@ -132,6 +132,24 @@ def add_opportunity(op):
     return new_id
 
 
+def add_response(opportunity_id, student, mobile_number, outcome):
+    response = {}
+
+    now = utils.to_timestamp(datetime.datetime.utcnow())
+
+    response['opportunity_id'] = opportunity_id
+    response['student'] = student
+    response['mobile_number'] = mobile_number
+    response['outcome'] = outcome
+    response['time_of_response'] = int(now)
+
+    logger.debug(response)
+
+    result = add_record('responses', response)
+    print(result)
+    return result
+
+
 def add_offer(ref_id, messages_sent):
     new_offer = {}
     now = utils.ticks_now()
