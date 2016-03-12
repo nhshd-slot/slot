@@ -59,9 +59,10 @@ def request_procedure(response_mobile, response_code):
             student_name = 'Unknown Student'
 
         result = fieldbook.allocate_opportunity(offer['opportunity_id'], student_name)
-        print(str.format("Result of database commit was {0}", result))
+        logger.debug("Result of database commit was {0}".format( result))
+
         this_opportunity = fieldbook.get_opportunity(offer['opportunity_id'])
-        print(str.format("This opportunity is {0}", this_opportunity))
+        logger.debug("This opportunity is {0}".format(this_opportunity))
 
         if result is False:
             q.enqueue(slot.sms_twilio.send_sms,
