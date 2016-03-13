@@ -24,6 +24,7 @@ from slot.users.views import users_blueprint
 from routes import dashboard, render_new_procedure_form, receive_sms, complete_procedure
 import slot.users.controller as user_controller
 import db_fieldbook as db
+import exceptions
 
 app.register_blueprint(users_blueprint)
 
