@@ -2,15 +2,17 @@ import datetime
 import logging
 from random import shuffle
 
+from redis import Redis
 from rq import Queue
 
-import slot.sms_twilio
-from bg_worker import conn
 from slot import db_fieldbook as fieldbook, sms_creator
+from slot.sms_twilio import send_sms
 
+# Get a logger
 logger = logging.getLogger('slot')
 
-q = Queue(connection=conn)
+# Set up RQ queue to add background tasks to
+q = Queue(connection=Redis())
 
 list_of_opportunities = []
 
@@ -28,7 +30,7 @@ def broadcast_procedure(procedure, location, duration, doctor, ref_id):
     for recipient in recipients:
         print("Queuing SMS")
         print(recipient)
-        result = q.enqueue(slot.sms_twilio.send_sms, recipient['mobile_number'], message)
+        result = q.enqueue(send_sms, recipient['mobile_number'], message)
         message_count += 1
 
     return message_count, response_code
@@ -66,7 +68,7 @@ def request_procedure(response_mobile, response_code):
         logger.debug("This opportunity is {0}".format(this_opportunity))
 
         if result is False:
-            q.enqueue(slot.sms_twilio.send_sms,
+            q.enqueue(send_sms,
                       response_mobile,
                                'Sorry - this learning opportunity has been taken by another student.')
 
@@ -84,7 +86,7 @@ def request_procedure(response_mobile, response_code):
                                  datetime.datetime.fromtimestamp(this_opportunity['expiry_time']).strftime("%H:%M"),
                                  this_opportunity['teacher'])
 
-            q.enqueue(slot.sms_twilio.send_sms,
+            q.enqueue(send_sms,
                       response_mobile,
                       message)
 
@@ -103,8 +105,7 @@ def request_procedure(response_mobile, response_code):
     except IndexError as e:
         print(e)
         print('Opportunity not found')
-
-        q.enqueue(slot.sms_twilio.send_sms,
+        q.enqueue(send_sms,
                   response_mobile,
                   'Sorry - this opportunity is not available.')
 
