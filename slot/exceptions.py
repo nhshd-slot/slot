@@ -3,7 +3,8 @@ import logging
 from logging import Formatter
 
 from logging.handlers import SMTPHandler
-mail_handler = SMTPHandler(app.config['SMTP_SERVER'],
+
+mail_handler = SMTPHandler((app.config['SMTP_SERVER'], int(app.config['SMTP_PORT'])),
                            app.config['SMTP_FROM'],
                            [app.config['EXCEPTION_EMAIL_ADDRESS']],
                            'SLOT Exception',
@@ -21,7 +22,6 @@ Message:
 
 %(message)s
 '''))
-
 
 mail_handler.setLevel(logging.ERROR)
 app.logger.addHandler(mail_handler)
