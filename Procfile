@@ -1,2 +1,2 @@
 web: gunicorn slot:app
-worker: python bg_worker.py
+worker: python slot/bg_worker.py
