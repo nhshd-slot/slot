@@ -1,5 +1,6 @@
 import datetime
 import logging
+from random import shuffle
 
 from rq import Queue
 
@@ -20,7 +21,7 @@ def broadcast_procedure(procedure, location, duration, doctor, ref_id):
     message = sms_creator.new_procedure_message(procedure, location, duration, doctor, response_code)
 
     recipients = fieldbook.get_students()
-    print(recipients)
+    shuffle(recipients)
 
     message_count = 0
 
@@ -59,14 +60,21 @@ def request_procedure(response_mobile, response_code):
             student_name = 'Unknown Student'
 
         result = fieldbook.allocate_opportunity(offer['opportunity_id'], student_name)
-        print(str.format("Result of database commit was {0}", result))
+        logger.debug("Result of database commit was {0}".format( result))
+
         this_opportunity = fieldbook.get_opportunity(offer['opportunity_id'])
-        print(str.format("This opportunity is {0}", this_opportunity))
+        logger.debug("This opportunity is {0}".format(this_opportunity))
 
         if result is False:
             q.enqueue(slot.sms_twilio.send_sms,
                       response_mobile,
                                'Sorry - this learning opportunity has been taken by another student.')
+
+            q.enqueue(fieldbook.add_response,
+                      offer['opportunity_id'],
+                      student_name,
+                      response_mobile,
+                      'not_successful')
 
         elif result is True:
             message = str.format('Attend {0} by {1}.\n\n'
@@ -80,12 +88,31 @@ def request_procedure(response_mobile, response_code):
                       response_mobile,
                       message)
 
+            q.enqueue(fieldbook.add_response,
+                      offer['opportunity_id'],
+                      student_name,
+                      response_mobile,
+                      'successful')
+
+            patch = {'status': 'ALLOCATED'}
+            q.enqueue(fieldbook.update_record,
+                      'offers',
+                      offer['id'],
+                      patch)
+
     except IndexError as e:
         print(e)
         print('Opportunity not found')
+
         q.enqueue(slot.sms_twilio.send_sms,
                   response_mobile,
                   'Sorry - this opportunity is not available.')
+
+        q.enqueue(fieldbook.add_response,
+                  offer['opportunity_id'],
+                  student_name,
+                  response_mobile,
+                  'not_found')
 
     except Exception as e:
         print(e)
