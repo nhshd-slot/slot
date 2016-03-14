@@ -1,5 +1,7 @@
 print('Loading config from local_config file')
 
+INSTANCE_NAME = 'slot-dev'
+
 twilio_sid = 'xxxxx'
 twilio_token = 'xxxxx'
 twilio_number = 'xxxxx'

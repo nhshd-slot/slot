@@ -5,6 +5,8 @@ try:
 
 except ImportError:
 
+    INSTANCE_NAME = os.environ.get('INSTANCE_NAME', '')
+
     twilio_sid = os.environ.get('TWILIO_SID', '')
     twilio_token = os.environ.get('TWILIO_TOKEN', '')
     twilio_number = os.environ.get('TWILIO_NUMBER', '')
