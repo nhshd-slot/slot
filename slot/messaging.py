@@ -3,10 +3,11 @@ import logging
 from random import shuffle
 
 from rq import Queue
-from bg_worker import conn
 
+from bg_worker import conn
 from slot import db_fieldbook as fieldbook, sms_creator
 from slot.sms_twilio import send_sms
+from slot.utils import mobile_number_string_to_int
 
 # Get a logger
 logger = logging.getLogger('slot')
@@ -148,14 +149,3 @@ def request_procedure(response_mobile, response_code):
 
     except Exception as e:
         logger.error('Error responding to procedure request', exc_info=True)
-
-
-# TODO: Add some extra validation and data-cleansing logic to this
-# Converts mobile numbers from strings to integers
-def mobile_number_string_to_int(mobile_string):
-    return int(mobile_string)
-
-
-# Takes a mobile number as a string, and redacts all but the last 3 digits
-def redact_mobile_number(mobile_string):
-    return str.format('XXXXX XXX{0}', mobile_string[-3:])

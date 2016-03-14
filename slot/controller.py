@@ -87,12 +87,12 @@ def receive_sms():
               sms['message'], 'IN')
 
     app.logger.debug("Received SMS: \n"
-          "Service Number: {0}\n"
-          "Mobile: {1}\n"
-          "Message: {2}\n".format(
-          sms['service_number'],
-          sms['mobile'],
-          sms['message']))
+                     "Service Number: {0}\n"
+                     "Mobile: {1}\n"
+                     "Message: {2}\n".format(
+                     sms['service_number'],
+                     sms['mobile'],
+                     sms['message']))
 
     # Process the procedure request
     messaging.request_procedure(sms['mobile'], sms['message'])
