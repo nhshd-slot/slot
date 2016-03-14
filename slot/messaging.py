@@ -2,8 +2,8 @@ import datetime
 import logging
 from random import shuffle
 
-from redis import Redis
 from rq import Queue
+from bg_worker import conn
 
 from slot import db_fieldbook as fieldbook, sms_creator
 from slot.sms_twilio import send_sms
@@ -12,7 +12,7 @@ from slot.sms_twilio import send_sms
 logger = logging.getLogger('slot')
 
 # Set up RQ queue to add background tasks to
-q = Queue(connection=Redis())
+q = Queue(connection=conn)
 
 list_of_opportunities = []
 

@@ -2,8 +2,8 @@
 import datetime
 import os
 
-from redis import Redis
 from rq import Queue
+from bg_worker import conn
 
 from slot import db_fieldbook
 from flask import request, redirect, render_template, json
@@ -14,7 +14,7 @@ from slot.main import app
 from slot import messaging
 
 # Set up RQ queue to add background tasks to
-q = Queue(connection=Redis())
+q = Queue(connection=conn)
 
 def dashboard():
     ops = db_fieldbook.get_all_opportunities()
