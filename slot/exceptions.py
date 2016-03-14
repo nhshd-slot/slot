@@ -4,6 +4,9 @@ from logging import Formatter
 
 from logging.handlers import SMTPHandler
 
+print(app.config['SMTP_SERVER'])
+print(app.config['SMTP_PORT'])
+
 mail_handler = SMTPHandler((app.config['SMTP_SERVER'], int(app.config['SMTP_PORT'])),
                            app.config['SMTP_FROM'],
                            [app.config['EXCEPTION_EMAIL_ADDRESS']],
