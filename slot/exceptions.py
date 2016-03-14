@@ -28,3 +28,5 @@ mail_handler.setLevel(logging.ERROR)
 # Add the mailhandler to the loggers
 app.logger.addHandler(mail_handler)
 logging.getLogger('slot').addHandler(mail_handler)
+
+app.logger.error('Startup mailer check')
