@@ -190,17 +190,21 @@ def add_offer(ref_id, messages_sent):
 
 
 def add_sms_log(from_number, to_number, body, direction):
-    now = int(utils.to_timestamp(datetime.datetime.utcnow()))
+    try:
+        now = int(utils.to_timestamp(datetime.datetime.utcnow()))
 
-    new_sms_log = {
-        'timestamp': now,
-        'from': from_number,
-        'to': to_number,
-        'body': body,
-        'direction': direction
-    }
+        new_sms_log = {
+            'timestamp': now,
+            'from': from_number,
+            'to': to_number,
+            'body': body,
+            'direction': direction
+        }
 
-    add_record('messages', new_sms_log)
+        add_record('messages', new_sms_log)
+
+    except Exception as e:
+        logger.error("Error adding SMS log", exc_info=True)
 
     return
 
