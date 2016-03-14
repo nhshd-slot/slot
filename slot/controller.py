@@ -2,6 +2,9 @@
 import datetime
 import os
 
+from redis import Redis
+from rq import Queue
+
 from slot import db_fieldbook
 from flask import request, redirect, render_template, json
 
@@ -10,6 +13,8 @@ import utils
 from slot.main import app
 from slot import messaging
 
+# Set up RQ queue to add background tasks to
+q = Queue(connection=Redis())
 
 def dashboard():
     ops = db_fieldbook.get_all_opportunities()
@@ -75,18 +80,24 @@ def receive_sms():
         'message': str(request.form['Body'])
     }
 
-    print(str.format("Received SMS: \n"
-                     "Service Number: {0}\n"
-                     "Mobile: {1}\n"
-                     "Message: {2}\n",
-                     sms['service_number'],
-                     sms['mobile'],
-                     sms['message']))
+    # Add a log entry for the received message
+    q.enqueue(db_fieldbook.add_sms_log,
+              sms['mobile'],
+              sms['service_number'],
+              sms['message'], 'IN')
 
+    app.logger.debug("Received SMS: \n"
+          "Service Number: {0}\n"
+          "Mobile: {1}\n"
+          "Message: {2}\n".format(
+          sms['service_number'],
+          sms['mobile'],
+          sms['message']))
+
+    # Process the procedure request
     messaging.request_procedure(sms['mobile'], sms['message'])
 
-    db_fieldbook.add_sms_log(sms['mobile'], sms['service_number'], sms['message'], 'IN')
-
+    # Return a successful response to Twilio regardless of the outcome of the procedure request
     return '<Response></Response>'
 
 
