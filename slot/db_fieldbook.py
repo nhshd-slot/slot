@@ -126,16 +126,22 @@ def get_offer(opportunity_id):
 
 def get_student_if_valid_else_none(mobile_number):
     """Returns a dictionary representing a student if a student with a matching mobile number is found"""
-    logger.debug("Searching for student with mobile number {0}".format(mobile_number))
-    request = fb.get_all_rows('students',
-                              mobile_number=mobile_number)
-    logger.debug(request)
-    if request:
-        student = request[0]
-        logger.debug(student)
-    else:
-        student = None
-    return student
+    try:
+        logger.debug("Searching for student with mobile number {0}".format(mobile_number))
+        request = fb.get_all_rows('students',
+                                  mobile_number=mobile_number)
+        logger.debug(request)
+
+        if request:
+            student = request[0]
+            logger.debug(student)
+            return student
+        else:
+            logger.debug("Student with matching mobile number not found.")
+            return None
+
+    except Exception as e:
+        logger.error("Error retrieving student from database", exc_info=True)
 
 
 def add_opportunity(op):
