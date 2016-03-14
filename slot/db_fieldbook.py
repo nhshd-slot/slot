@@ -104,6 +104,24 @@ def get_opportunity(opportunity_id):
     return result
 
 
+def get_offer(opportunity_id):
+    """Returns a dictionary representing an offer with a matching ID"""
+    try:
+        logger.debug('Checking status of opportunity {0}'.format(opportunity_id))
+        requests = fb.get_all_rows('offers',
+                                  opportunity_id=opportunity_id)
+        logger.debug('Opportunity Status: {0}'.format(requests))
+
+        if len(requests) > 0:
+            offer = requests[0]
+            logger.debug("Found offer with status {0}".format(offer['status']))
+            return offer
+        else:
+            logger.debug("Did not find an offer with this Id")
+            return None
+
+    except Exception as e:
+        logger.error("Error retrieving opportunity from database", exc_info=True)
 
 
 def get_student_if_valid_else_none(mobile_number):
