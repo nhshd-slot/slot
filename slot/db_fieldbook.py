@@ -97,17 +97,13 @@ def get_opportunity(opportunity_id):
     result = fb.get_row('opportunities',
                         opportunity_id)
 
-def get_opportunity_status(opportunity_id):
-    """A function to check the status of a particular opportunity by its ID"""
-    logger.debug('Checking status of opportunity {opp_id}'.format(opp_id=opportunity_id))
     # url = str.format('{0}/{1}/{2}', config.fieldbook_url, 'opportunities', opportunity_id)
-    # log.debug('Resource URL is: {url}'.format(url=url))
-    request = fb.get_all_rows('offers',
-                              include_fields=('status','opportunity_id', 'id'),
-                              opportunity_id=opportunity_id)
-    logger.debug('Opportunity Status: {opp}'.format(opp=request))
-    logger.debug('Opportunity Status: {opp}'.format(opp=request[0]))
-    return request[0]
+    # print(url)
+    # request = requests.get(url, auth=(config.fieldbook_user, config.fieldbook_pass))
+    # print(request.json())
+    return result
+
+
 
 
 def get_student_if_valid_else_none(mobile_number):
