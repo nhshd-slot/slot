@@ -7,7 +7,7 @@ from logging.handlers import SMTPHandler
 mail_handler = SMTPHandler((app.config['SMTP_SERVER'], int(app.config['SMTP_PORT'])),
                            app.config['SMTP_FROM'],
                            [app.config['EXCEPTION_EMAIL_ADDRESS']],
-                           'SLOT Exception',
+                           'SLOT Exception ({0})'.format(app.config['INSTANCE_NAME']),
                            credentials=(app.config['SMTP_USERNAME'], app.config['SMTP_PASSWORD']),
                            secure=())
 
@@ -24,5 +24,7 @@ Message:
 '''))
 
 mail_handler.setLevel(logging.ERROR)
+
+# Add the mailhandler to the loggers
 app.logger.addHandler(mail_handler)
 logging.getLogger('slot').addHandler(mail_handler)
