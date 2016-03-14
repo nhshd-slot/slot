@@ -93,13 +93,9 @@ def get_all_opportunities():
 
 
 def get_opportunity(opportunity_id):
-    print('Getting opportunity')
-    url = str.format('{0}/{1}/{2}', config.fieldbook_url, 'opportunities', opportunity_id)
-    print(url)
-    request = requests.get(url, auth=(config.fieldbook_user, config.fieldbook_pass))
-    print(request.json())
-    return request.json()
-
+    logger.debug('Getting opportunity {0}'.format(opportunity_id))
+    result = fb.get_row('opportunities',
+                        opportunity_id)
 
 def get_opportunity_status(opportunity_id):
     """A function to check the status of a particular opportunity by its ID"""
