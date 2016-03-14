@@ -1,3 +1,7 @@
+print('Loading config from local_config file')
+
+INSTANCE_NAME = 'slot-dev'
+
 twilio_sid = 'xxxxx'
 twilio_token = 'xxxxx'
 twilio_number = 'xxxxx'
@@ -7,13 +11,23 @@ fieldbook_user = 'xxxxx'
 fieldbook_pass = 'xxxxx'
 
 debug_mode = True
-demo_mode = True
 
-website_user = 'slot'
-website_pass = 'slot'
+basic_auth_user = 'user'
+basic_auth_pass = 'pass'
+
+dash_refresh_timeout = 30
 
 CACHE_REDIS_URL = 'redis://localhost:6379'
+CACHE_DEFAULT_TIMEOUT = 300
+
 REDIS_URL = 'redis://localhost:6379'
 
 SECRET_KEY = 'secret_key'
 SESSION_COOKIE_NAME = 'slot-dev-session-cookie'
+
+SMTP_SERVER = ''
+SMTP_PORT = ''
+SMTP_FROM = ''
+SMTP_USERNAME = ''
+SMTP_PASSWORD = ''
+EXCEPTION_EMAIL_ADDRESS = ''

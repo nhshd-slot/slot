@@ -5,13 +5,17 @@ import slot.db_fieldbook as db
 import models
 
 
+def convert_user_dict_to_user_instance(user_dict):
+    return models.User(user_dict['username'], user_dict['password'])
+
+
 def return_user_instance_or_anonymous(thing):
     if type(thing) == type(dict()):
         user_dict = thing
-        user_instance = models.User(user_dict['username'], user_dict['password'])
+        user_instance = convert_user_dict_to_user_instance(user_dict)
     elif type(thing) == type(json()):
         user_dict = json.loads(thing)
-        user_instance = models.User(user_dict['username'], user_dict['password'])
+        user_instance = convert_user_dict_to_user_instance(user_dict)
     elif type(thing) == type(models.User()):
         user_instance = thing
 

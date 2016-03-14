@@ -5,6 +5,8 @@ try:
 
 except ImportError:
 
+    INSTANCE_NAME = os.environ.get('INSTANCE_NAME', '')
+
     twilio_sid = os.environ.get('TWILIO_SID', '')
     twilio_token = os.environ.get('TWILIO_TOKEN', '')
     twilio_number = os.environ.get('TWILIO_NUMBER', '')
@@ -26,9 +28,14 @@ except ImportError:
 
     REDIS_URL = os.getenv('REDIS_URL', 'redis://localhost:6379')
 
+    SMTP_SERVER = os.getenv('SMTP_SERVER', '')
+    SMTP_PORT = os.getenv('SMTP_PORT', '')
+    SMTP_FROM = os.getenv('SMTP_FROM', '')
+    SMTP_USERNAME = os.getenv('SMTP_USERNAME', '')
+    SMTP_PASSWORD = os.getenv('SMTP_PASSWORD', '')
+    EXCEPTION_EMAIL_ADDRESS = os.getenv('EXCEPTION_EMAIL_ADDRESS', '')
+
     # We need the following variables to be boolean so we just check for a value against the environment variable
     # to mean True and then take absence of either a value or the variable to mean False
-
-    demo_mode = bool(os.environ.get('DEMO_MODE', False))
 
     debug_mode = bool(os.environ.get('DEBUG_MODE', False))

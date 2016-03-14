@@ -93,25 +93,55 @@ def get_all_opportunities():
 
 
 def get_opportunity(opportunity_id):
-    print('Getting opportunity')
-    url = str.format('{0}/{1}/{2}', config.fieldbook_url, 'opportunities', opportunity_id)
-    print(url)
-    request = requests.get(url, auth=(config.fieldbook_user, config.fieldbook_pass))
-    print(request.json())
-    return request.json()
+    logger.debug('Getting opportunity {0}'.format(opportunity_id))
+    result = fb.get_row('opportunities',
+                        opportunity_id)
 
-
-def get_opportunity_status(opportunity_id):
-    """A function to check the status of a particular opportunity by its ID"""
-    logger.debug('Checking status of opportunity {opp_id}'.format(opp_id=opportunity_id))
     # url = str.format('{0}/{1}/{2}', config.fieldbook_url, 'opportunities', opportunity_id)
-    # log.debug('Resource URL is: {url}'.format(url=url))
-    request = fb.get_all_rows('offers',
-                              include_fields=('status','opportunity_id'),
-                              opportunity_id=opportunity_id)
-    logger.debug('Opportunity Status: {opp}'.format(opp=request))
-    logger.debug('Opportunity Status: {opp}'.format(opp=request[0]))
-    return request[0]
+    # print(url)
+    # request = requests.get(url, auth=(config.fieldbook_user, config.fieldbook_pass))
+    # print(request.json())
+    return result
+
+
+def get_offer(opportunity_id):
+    """Returns a dictionary representing an offer with a matching ID"""
+    try:
+        logger.debug('Checking status of opportunity {0}'.format(opportunity_id))
+        requests = fb.get_all_rows('offers',
+                                  opportunity_id=opportunity_id)
+        logger.debug('Opportunity Status: {0}'.format(requests))
+
+        if len(requests) > 0:
+            offer = requests[0]
+            logger.debug("Found offer with status {0}".format(offer['status']))
+            return offer
+        else:
+            logger.debug("Did not find an offer with this Id")
+            return None
+
+    except Exception as e:
+        logger.error("Error retrieving opportunity from database", exc_info=True)
+
+
+def get_student_if_valid_else_none(mobile_number):
+    """Returns a dictionary representing a student if a student with a matching mobile number is found"""
+    try:
+        logger.debug("Searching for student with mobile number {0}".format(mobile_number))
+        request = fb.get_all_rows('students',
+                                  mobile_number=mobile_number)
+        logger.debug(request)
+
+        if request:
+            student = request[0]
+            logger.debug(student)
+            return student
+        else:
+            logger.debug("Student with matching mobile number not found.")
+            return None
+
+    except Exception as e:
+        logger.error("Error retrieving student from database", exc_info=True)
 
 
 def add_opportunity(op):
@@ -132,6 +162,24 @@ def add_opportunity(op):
     return new_id
 
 
+def add_response(opportunity_id, student, mobile_number, outcome):
+    response = {}
+
+    now = utils.to_timestamp(datetime.datetime.utcnow())
+
+    response['opportunity_id'] = opportunity_id
+    response['student'] = student
+    response['mobile_number'] = mobile_number
+    response['outcome'] = outcome
+    response['time_of_response'] = int(now)
+
+    logger.debug(response)
+
+    result = add_record('responses', response)
+    print(result)
+    return result
+
+
 def add_offer(ref_id, messages_sent):
     new_offer = {}
     now = utils.ticks_now()
@@ -148,17 +196,21 @@ def add_offer(ref_id, messages_sent):
 
 
 def add_sms_log(from_number, to_number, body, direction):
-    now = int(utils.to_timestamp(datetime.datetime.utcnow()))
+    try:
+        now = int(utils.to_timestamp(datetime.datetime.utcnow()))
 
-    new_sms_log = {
-        'timestamp': now,
-        'from': from_number,
-        'to': to_number,
-        'body': body,
-        'direction': direction
-    }
+        new_sms_log = {
+            'timestamp': now,
+            'from': from_number,
+            'to': to_number,
+            'body': body,
+            'direction': direction
+        }
 
-    add_record('messages', new_sms_log)
+        add_record('messages', new_sms_log)
+
+    except Exception as e:
+        logger.error("Error adding SMS log", exc_info=True)
 
     return
 

@@ -1,5 +1,6 @@
 # Project-specific files
 local_config.py
+set_env_variables*.sh
 
 # Jetbrains IntelliJ (and derivatives)
 .idea/
