@@ -5,9 +5,9 @@ from random import shuffle
 from rq import Queue
 
 from bg_worker import conn
-from slot import db_fieldbook as fieldbook, sms_creator
-from slot.sms_twilio import send_sms
-from slot.utils import mobile_number_string_to_int
+import db_fieldbook as fieldbook, sms_creator
+from sms_twilio import send_sms
+from utils import mobile_number_string_to_int
 
 # Get a logger
 logger = logging.getLogger('slot')
