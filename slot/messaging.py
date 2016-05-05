@@ -149,3 +149,27 @@ def request_procedure(response_mobile, response_code):
 
     except Exception as e:
         logger.error('Error responding to procedure request', exc_info=True)
+
+
+def request_opt_out(response_mobile):
+
+    try:
+        # Convert the mobile number string to an int
+        int_mobile_number = mobile_number_string_to_int(response_mobile)
+        # Mark the student as inactive
+        fieldbook.disable_student(int_mobile_number)
+
+    except Exception as e:
+        logger.exception(exc_info=True)
+
+
+def request_opt_in(response_mobile):
+
+    try:
+        # Convert the mobile number string to an int
+        int_mobile_number = mobile_number_string_to_int(response_mobile)
+        # Mark the student as inactive
+        fieldbook.enable_student(int_mobile_number)
+
+    except Exception as e:
+        logger.exception(exc_info=True)

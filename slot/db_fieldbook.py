@@ -215,6 +215,40 @@ def add_sms_log(from_number, to_number, body, direction):
     return
 
 
+def disable_student(mobile_number):
+    try:
+        # Check that the student exists first
+        student = get_student_if_valid_else_none(mobile_number)
+
+        # If the student exists in the database, mark them as inactive
+        if student:
+            student_id = student['id']
+            patch_data = {
+                'active': 'false'
+            }
+            update_record('students',student_id, patch_data)
+
+    except Exception as e:
+        logger.exception("Error trying to disable student", exc_info=True)
+
+
+def enable_student(mobile_number):
+    try:
+        # Check that the student exists first
+        student = get_student_if_valid_else_none(mobile_number)
+
+        # If the student exists in the database, mark them as inactive
+        if student:
+            student_id = student['id']
+            patch_data = {
+                'active': 'true'
+            }
+            update_record('students',student_id, patch_data)
+
+    except Exception as e:
+        logger.exception("Error trying to disable student", exc_info=True)
+
+
 def allocate_opportunity(opportunity_id, student_name):
     logger.debug("Attempting to update opportunity record with allocation")
 
