@@ -1,8 +1,8 @@
-from slot import basic_auth
 from flask_login import login_required
 
 from slot.main import app
 from slot import controller as con
+from slot import basic_auth
 
 
 @app.route('/')

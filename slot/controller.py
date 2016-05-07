@@ -94,6 +94,16 @@ def receive_sms():
                      sms['mobile'],
                      sms['message']))
 
+    # Check the message to see if it is an opt-out request
+    if sms['message'].upper() in ['STOP', 'STOPALL', 'UNSUBSCRIBE', 'CANCEL', 'END', 'QUIT']:
+        messaging.request_opt_out(sms['mobile'])
+        return '<Response></Response>'
+
+    # And check the message to see if it is an opt-in request
+    elif sms['message'].upper() in ['START', 'YES']:
+        messaging.request_opt_in(sms['mobile'])
+        return '<Response></Response>'
+
     # Process the procedure request
     messaging.request_procedure(sms['mobile'], sms['message'])
 

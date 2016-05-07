@@ -1,9 +1,10 @@
 import logging
 
-from flask import Flask
 from flask_cache import Cache
 from flask_login import LoginManager
 from flask_sslify import SSLify
+
+from slot import app
 
 # Set up logging
 log = logging.getLogger('slot')
@@ -12,7 +13,6 @@ ch = logging.StreamHandler()
 ch.setLevel(logging.DEBUG)
 log.addHandler(ch)
 
-app = Flask(__name__)
 app.config.from_object('config')
 sslify = SSLify(app, age=300)
 cache = Cache(app, config={'CACHE_TYPE': 'redis'})
@@ -24,10 +24,14 @@ from slot.users.views import users_blueprint
 from routes import dashboard, render_new_procedure_form, receive_sms, complete_procedure
 import slot.users.controller as user_controller
 import db_fieldbook as db
-import exceptions
+import error_mailer
 
+error_mailer.initialize_app(app, additional_loggers=['slot'])
+
+# Register blueprints
 app.register_blueprint(users_blueprint)
 
+# Initialise flask_login
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.session_protection = "strong"
