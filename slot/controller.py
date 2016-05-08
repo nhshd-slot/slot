@@ -30,7 +30,10 @@ def dashboard():
         elif op["status"] == "Not Attended":
             op["class"] = "active"
         op["remaining_mins"] = int(int(op["expiry_time"] - utils.timestamp_to_ticks(datetime.datetime.utcnow())) / 60)
-    return render_template('dashboard.html', ops=ops, dash_refresh_timeout=config.dash_refresh_timeout)
+    return render_template('dashboard.html',
+                           ops=ops,
+                           dash_refresh_timeout=config.dash_refresh_timeout,
+                           instance_name=config.INSTANCE_NAME)
 
 
 def render_new_procedure_form():
