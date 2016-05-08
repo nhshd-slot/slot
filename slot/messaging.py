@@ -69,7 +69,7 @@ def request_procedure(response_mobile, response_code):
         offer = fieldbook.get_offer(response_code)
         offer_expired = fieldbook.is_opportunity_expired(offer['opportunity_id'])
 
-        if offer is None or offer_expired:
+        if offer is None:
             q.enqueue(send_sms,
               response_mobile,
               'Sorry - this opportunity is not available.')
