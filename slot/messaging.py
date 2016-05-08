@@ -117,9 +117,9 @@ def request_procedure(response_mobile, response_code):
             this_opportunity = fieldbook.get_opportunity(offer['opportunity_id'])
             logger.debug("This opportunity is {0}".format(this_opportunity))
 
-            message = str.format('Attend {0} by {1}.\n\n'
-                                 'Ask for {2} to complete this procedure.\n\n'
-                                 "This learning opportunity has been reserved for you.",
+            message = str.format('Opportunity has been reserved for you.\n\n'
+                                 'Attend {0} by {1}.\n\n'
+                                 'Ask for {2} to complete this procedure.\n\n',
                                  this_opportunity['location'],
                                  datetime.datetime.fromtimestamp(this_opportunity['expiry_time']).strftime("%H:%M"),
                                  this_opportunity['teacher'])
