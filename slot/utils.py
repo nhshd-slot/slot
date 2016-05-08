@@ -31,6 +31,13 @@ def ticks_local_now():
     return ticks
 
 
+def ticks_is_later_than_now(ticks):
+    now = datetime.datetime.utcnow()
+    timestamp = ticks_to_timestamp(ticks)
+    is_later = timestamp > now
+    return is_later
+
+
 def mobile_number_string_to_int(mobile_string):
     """Converts mobile numbers from a string to an integer"""
     return int(mobile_string)

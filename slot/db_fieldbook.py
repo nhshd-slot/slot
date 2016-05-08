@@ -126,11 +126,8 @@ def get_offer(opportunity_id):
 
 def is_opportunity_expired(opportunity_id):
     opp = get_opportunity(opportunity_id)
-    expiry_time = utils.ticks_to_timestamp(opp['expiry_time'])
-    if expiry_time < datetime.datetime.now():
-        return True
-    elif expiry_time > datetime.datetime.now():
-        return False
+    is_expired = not utils.ticks_is_later_than_now(opp['expiry_time'])
+    return is_expired
 
 
 def get_student_if_valid_else_none(mobile_number):
