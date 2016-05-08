@@ -82,7 +82,7 @@ def get_all_opportunities():
             opportunity["status"] = "Not Attended"
         elif opportunity["student"]:
             opportunity["status"] = "Accepted"
-        elif utils.to_timestamp(datetime.datetime.utcnow()) > int(opportunity["expiry_time"]):
+        elif utils.timestamp_to_ticks(datetime.datetime.utcnow()) > int(opportunity["expiry_time"]):
             opportunity["status"] = "Expired"
         else:
             opportunity["status"] = "Offered"
@@ -124,6 +124,12 @@ def get_offer(opportunity_id):
         logger.error("Error retrieving opportunity from database", exc_info=True)
 
 
+def is_opportunity_expired(opportunity_id):
+    opp = get_opportunity(opportunity_id)
+    is_expired = not utils.ticks_is_later_than_now(opp['expiry_time'])
+    return is_expired
+
+
 def get_student_if_valid_else_none(mobile_number):
     """Returns a dictionary representing a student if a student with a matching mobile number is found"""
     try:
@@ -148,7 +154,7 @@ def add_opportunity(op):
     print(op)
     new_op = {}
 
-    now = utils.to_timestamp(datetime.datetime.utcnow())
+    now = utils.timestamp_to_ticks(datetime.datetime.utcnow())
 
     new_op['teacher'] = op['doctor']
     new_op['skill'] = op['procedure']
@@ -165,7 +171,7 @@ def add_opportunity(op):
 def add_response(opportunity_id, student, mobile_number, outcome):
     response = {}
 
-    now = utils.to_timestamp(datetime.datetime.utcnow())
+    now = utils.timestamp_to_ticks(datetime.datetime.utcnow())
 
     response['opportunity_id'] = opportunity_id
     response['student'] = student
@@ -182,7 +188,7 @@ def add_response(opportunity_id, student, mobile_number, outcome):
 
 def add_offer(ref_id, messages_sent):
     new_offer = {}
-    now = utils.ticks_now()
+    now = utils.ticks_utc_now()
 
     new_offer['time_sent'] = now
     new_offer['opportunity_id'] = ref_id
@@ -197,7 +203,7 @@ def add_offer(ref_id, messages_sent):
 
 def add_sms_log(from_number, to_number, body, direction):
     try:
-        now = int(utils.to_timestamp(datetime.datetime.utcnow()))
+        now = int(utils.timestamp_to_ticks(datetime.datetime.utcnow()))
 
         new_sms_log = {
             'timestamp': now,
@@ -252,7 +258,7 @@ def enable_student(mobile_number):
 def allocate_opportunity(opportunity_id, student_name):
     logger.debug("Attempting to update opportunity record with allocation")
 
-    now = int(utils.to_timestamp(datetime.datetime.utcnow()))
+    now = int(utils.timestamp_to_ticks(datetime.datetime.utcnow()))
 
     opportunity = get_opportunity(opportunity_id)
 

@@ -64,15 +64,15 @@ def request_procedure(response_mobile, response_code):
     except Exception as e:
         logger.error("Error checking student identity", exc_info=True)
 
-
     try:
         # Get the status of the offer
         offer = fieldbook.get_offer(response_code)
 
+
         if offer is None:
             q.enqueue(send_sms,
               response_mobile,
-              'Sorry - this opportunity is not available.')
+              "Sorry - we didn't find an opportunity with this reference.")
 
             q.enqueue(fieldbook.add_response,
                       response_code,
@@ -82,8 +82,24 @@ def request_procedure(response_mobile, response_code):
             return
 
         elif offer:
-            offer_status = offer['status']
-            logger.debug('Status of Opportunity is {0}'.format(offer_status))
+
+            offer_expired = fieldbook.is_opportunity_expired(offer['opportunity_id'])
+
+            if offer_expired:
+                q.enqueue(send_sms,
+                          response_mobile,
+                          'Sorry - this opportunity has expired.')
+
+                q.enqueue(fieldbook.add_response,
+                          response_code,
+                          student_name,
+                          response_mobile,
+                          'EXPIRED')
+                return
+
+            else:
+                offer_status = offer['status']
+                logger.debug('Status of Opportunity is {0}'.format(offer_status))
 
     except Exception as e:
         logger.error('Error getting the status of the offer', exc_info=True)
