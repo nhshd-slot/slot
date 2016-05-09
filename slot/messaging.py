@@ -29,9 +29,9 @@ def broadcast_procedure(procedure, location, duration, doctor, ref_id):
     message_count = 0
 
     for recipient in recipients:
-        print("Queuing SMS")
-        print(recipient)
-        result = q.enqueue(send_sms, recipient['mobile_number'], message)
+        logger.debug("Queuing SMS")
+        logger.debug(recipient)
+        q.enqueue(send_sms, recipient['mobile_number'], message)
         message_count += 1
 
     return message_count, response_code

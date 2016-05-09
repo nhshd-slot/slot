@@ -54,7 +54,7 @@ def get_procedures():
 
 @cache.cached(key_prefix='all_students')
 def get_students():
-    return [s for s in get_sheet_all_records('students')]
+    return [s for s in get_sheet_all_records('students') if s['active'] == 'true']
 
 
 def get_user(username):
@@ -130,6 +130,7 @@ def is_opportunity_expired(opportunity_id):
     return is_expired
 
 
+@cache.cached(key_prefix='student_if_valid', timeout=3600)
 def get_student_if_valid_else_none(mobile_number):
     """Returns a dictionary representing a student if a student with a matching mobile number is found"""
     try:
