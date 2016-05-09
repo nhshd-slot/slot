@@ -24,7 +24,10 @@ def broadcast_procedure(procedure, location, duration, doctor, ref_id):
     message = sms_creator.new_procedure_message(procedure, location, duration, doctor, response_code)
 
     recipients = fieldbook.get_students()
+    # Randomise the order of the student list so that messages not sent out in the same order every time
     shuffle(recipients)
+    # Only take the first 50 students from the list to reduce the sample size for each offer
+    # recipients = recipients[:50]
 
     message_count = 0
 

@@ -112,7 +112,9 @@ def receive_sms():
     # Else assume it is a request for an opportunity
     else:
         # Process the procedure request
-        messaging.request_procedure(sms['mobile'], sms['message'])
+        q.enqueue(messaging.request_procedure,
+                  sms['mobile'],
+                  sms['message'])
 
         # Return a successful response to Twilio regardless of the outcome of the procedure request
         return '<Response></Response>'
