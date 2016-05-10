@@ -1,8 +1,8 @@
-def new_procedure_message(procedure, location, duration, doctor, message_ref):
-    message = str.format("{0} at {1}.\nAttend within {2} mins.\nAsk for {3}.\n\nTo accept reply '{4}'",
+def new_procedure_message(procedure, location, expiry_time, doctor, message_ref):
+    message = str.format("{0} at {1}.\nAttend by {2}.\nAsk for {3}.\n\nTo accept reply '{4}'",
                          procedure,
                          location,
-                         duration,
+                         expiry_time,
                          doctor,
                          message_ref)
     print(message)

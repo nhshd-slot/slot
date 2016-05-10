@@ -56,13 +56,15 @@ def render_new_procedure_form():
         }
 
         print(opportunity)
-        ref_id = db_fieldbook.add_opportunity(opportunity)
+        ref_id, new_op = db_fieldbook.add_opportunity(opportunity)
+
+        expiry_time = utils.ticks_to_timestamp(new_op['expiry_time'])
 
         number_messages_sent, message_ref = messaging.broadcast_procedure(opportunity_procedure,
                                                                           opportunity_location,
-                                                                          opportunity_duration,
                                                                           opportunity_doctor,
-                                                                          ref_id)
+                                                                          ref_id,
+                                                                          expiry_time)
 
         offer = db_fieldbook.add_offer(ref_id, number_messages_sent)
         print(offer['id'])

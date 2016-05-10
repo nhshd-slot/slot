@@ -166,7 +166,7 @@ def add_opportunity(op):
     result = add_record('opportunities', new_op)
 
     new_id = result['id']
-    return new_id
+    return new_id, new_op
 
 
 def add_response(opportunity_id, student, mobile_number, outcome):

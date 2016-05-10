@@ -21,10 +21,10 @@ q = Queue(connection=qconn)
 list_of_opportunities = []
 
 
-def broadcast_procedure(procedure, location, duration, doctor, ref_id):
+def broadcast_procedure(procedure, location, doctor, ref_id, expiry_time):
     response_code = ref_id
     print(str.format("Ref is {0}", ref_id))
-    message = sms_creator.new_procedure_message(procedure, location, duration, doctor, response_code)
+    message = sms_creator.new_procedure_message(procedure, location, expiry_time.strftime("%H:%M"), doctor, response_code)
 
     recipients = fieldbook.get_students()
     # Randomise the order of the student list so that messages not sent out in the same order every time
