@@ -3,7 +3,7 @@ import datetime
 import os
 
 from rq import Queue
-from bg_worker import conn
+from run_worker_all import conn as qconn
 
 from slot import db_fieldbook
 from flask import request, redirect, render_template, json
@@ -14,7 +14,11 @@ from slot.main import app
 from slot import messaging
 
 # Set up RQ queue to add background tasks to
-q = Queue(connection=conn)
+q_sms = Queue('sms', connection=qconn)
+q_db = Queue('db', connection=qconn)
+q_request = Queue('request', connection=qconn)
+q = Queue(connection=qconn)
+
 
 def dashboard():
     ops = db_fieldbook.get_all_opportunities()
@@ -84,10 +88,10 @@ def receive_sms():
     }
 
     # Add a log entry for the received message
-    q.enqueue(db_fieldbook.add_sms_log,
-              sms['mobile'],
-              sms['service_number'],
-              sms['message'], 'IN')
+    q_db.enqueue(db_fieldbook.add_sms_log,
+                 sms['mobile'],
+                 sms['service_number'],
+                 sms['message'], 'IN')
 
     app.logger.debug("Received SMS: \n"
                      "Service Number: {0}\n"
@@ -99,20 +103,20 @@ def receive_sms():
 
     # Check the message to see if it is an opt-out request
     if sms['message'].upper() in ['STOP', 'STOPALL', 'UNSUBSCRIBE', 'CANCEL', 'END', 'QUIT']:
-        q.enqueue(messaging.request_opt_out,
+        q_db.enqueue(messaging.request_opt_out,
                   sms['mobile'])
         return '<Response></Response>'
 
     # And check the message to see if it is an opt-in request
     elif sms['message'].upper() in ['START', 'YES']:
-        q.enqueue(messaging.request_opt_in,
+        q_db.enqueue(messaging.request_opt_in,
                   sms['mobile'])
         return '<Response></Response>'
 
     # Else assume it is a request for an opportunity
     else:
         # Process the procedure request
-        q.enqueue(messaging.request_procedure,
+        q_request.enqueue(messaging.request_procedure,
                   sms['mobile'],
                   sms['message'])
 
