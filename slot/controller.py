@@ -40,6 +40,24 @@ def dashboard():
                            instance_name=config.INSTANCE_NAME)
 
 
+def receive_feedback():
+    if request.method == 'POST':
+        print(request.form)
+        feedback_text = request.form['feedback_text']
+
+        feedback = {
+            'text': feedback_text,
+            'timestamp': utils.ticks_utc_now()
+        }
+
+        print(feedback)
+
+        return redirect('/dashboard', code=302)
+
+    else:
+        return render_template('feedback.html')
+
+
 def render_new_procedure_form():
     if request.method == 'POST':
         print(request.form)

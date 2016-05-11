@@ -24,6 +24,11 @@ def receive_sms():
     return con.receive_sms()
 
 
+@app.route('/feedback', methods=['GET', 'POST'])
+def receive_feedback():
+    return con.receive_feedback()
+
+
 @app.route('/complete', methods=['POST'])
 @login_required
 def complete_procedure():
