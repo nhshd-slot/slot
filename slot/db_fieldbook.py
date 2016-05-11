@@ -202,6 +202,20 @@ def add_offer(ref_id, messages_sent):
     return result
 
 
+def add_feedback(feedback_text):
+
+    new_feedback = {
+        'feedback_text': feedback_text,
+        'timestamp': utils.ticks_utc_now()
+    }
+
+    print(new_feedback)
+
+    result = fb.add_row('feedback', new_feedback)
+    print(result)
+    return result
+
+
 def add_sms_log(from_number, to_number, body, direction):
     try:
         now = int(utils.timestamp_to_ticks(datetime.datetime.utcnow()))
