@@ -202,10 +202,10 @@ def add_offer(ref_id, messages_sent):
     return result
 
 
-def add_feedback(timestamp, feedback_text):
+def add_feedback(feedback_text):
 
     new_feedback = {
-        'text': feedback_text,
+        'feedback_text': feedback_text,
         'timestamp': utils.ticks_utc_now()
     }
 

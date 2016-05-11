@@ -46,7 +46,6 @@ def receive_feedback():
         feedback_text = request.form['feedback_text']
 
         q_db.enqueue(db_fieldbook.add_feedback,
-                     utils.ticks_utc_now(),
                      feedback_text)
 
         return redirect('/dashboard', code=302)
