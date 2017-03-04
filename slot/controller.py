@@ -3,18 +3,22 @@ import datetime
 import os
 
 from rq import Queue
-from bg_worker import conn
+from .run_worker_all import conn as qconn
 
 from slot import db_fieldbook
 from flask import request, redirect, render_template, json
 
 import config
-import utils
+from . import utils
 from slot.main import app
 from slot import messaging
 
 # Set up RQ queue to add background tasks to
-q = Queue(connection=conn)
+q_sms = Queue('sms', connection=qconn)
+q_db = Queue('db', connection=qconn)
+q_request = Queue('request', connection=qconn)
+q = Queue(connection=qconn)
+
 
 def dashboard():
     ops = db_fieldbook.get_all_opportunities()
@@ -29,8 +33,25 @@ def dashboard():
             op["class"] = "active"
         elif op["status"] == "Not Attended":
             op["class"] = "active"
-        op["remaining_mins"] = int(int(op["expiry_time"] - utils.to_timestamp(datetime.datetime.utcnow())) / 60)
-    return render_template('dashboard.html', ops=ops, dash_refresh_timeout=config.dash_refresh_timeout)
+        op["remaining_mins"] = int(int(op["expiry_time"] - utils.timestamp_to_ticks(datetime.datetime.utcnow())) / 60)
+    return render_template('dashboard.html',
+                           ops=ops,
+                           dash_refresh_timeout=config.dash_refresh_timeout,
+                           instance_name=config.INSTANCE_NAME)
+
+
+def receive_feedback():
+    if request.method == 'POST':
+        print(request.form)
+        feedback_text = request.form['feedback_text']
+
+        q_db.enqueue(db_fieldbook.add_feedback,
+                     feedback_text)
+
+        return redirect('/dashboard', code=302)
+
+    else:
+        return render_template('feedback.html')
 
 
 def render_new_procedure_form():
@@ -49,13 +70,15 @@ def render_new_procedure_form():
         }
 
         print(opportunity)
-        ref_id = db_fieldbook.add_opportunity(opportunity)
+        ref_id, new_op = db_fieldbook.add_opportunity(opportunity)
+
+        expiry_time = datetime.datetime.fromtimestamp(new_op['expiry_time']).strftime("%H:%M")
 
         number_messages_sent, message_ref = messaging.broadcast_procedure(opportunity_procedure,
                                                                           opportunity_location,
-                                                                          opportunity_duration,
                                                                           opportunity_doctor,
-                                                                          ref_id)
+                                                                          ref_id,
+                                                                          expiry_time)
 
         offer = db_fieldbook.add_offer(ref_id, number_messages_sent)
         print(offer['id'])
@@ -81,10 +104,10 @@ def receive_sms():
     }
 
     # Add a log entry for the received message
-    q.enqueue(db_fieldbook.add_sms_log,
-              sms['mobile'],
-              sms['service_number'],
-              sms['message'], 'IN')
+    q_db.enqueue(db_fieldbook.add_sms_log,
+                 sms['mobile'],
+                 sms['service_number'],
+                 sms['message'], 'IN')
 
     app.logger.debug("Received SMS: \n"
                      "Service Number: {0}\n"
@@ -96,19 +119,25 @@ def receive_sms():
 
     # Check the message to see if it is an opt-out request
     if sms['message'].upper() in ['STOP', 'STOPALL', 'UNSUBSCRIBE', 'CANCEL', 'END', 'QUIT']:
-        messaging.request_opt_out(sms['mobile'])
+        q_db.enqueue(messaging.request_opt_out,
+                  sms['mobile'])
         return '<Response></Response>'
 
     # And check the message to see if it is an opt-in request
     elif sms['message'].upper() in ['START', 'YES']:
-        messaging.request_opt_in(sms['mobile'])
+        q_db.enqueue(messaging.request_opt_in,
+                  sms['mobile'])
         return '<Response></Response>'
 
-    # Process the procedure request
-    messaging.request_procedure(sms['mobile'], sms['message'])
+    # Else assume it is a request for an opportunity
+    else:
+        # Process the procedure request
+        q_request.enqueue(messaging.request_procedure,
+                  sms['mobile'],
+                  sms['message'])
 
-    # Return a successful response to Twilio regardless of the outcome of the procedure request
-    return '<Response></Response>'
+        # Return a successful response to Twilio regardless of the outcome of the procedure request
+        return '<Response></Response>'
 
 
 def complete_procedure():

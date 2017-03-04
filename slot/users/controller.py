@@ -2,7 +2,7 @@ import json
 from flask_login import AnonymousUserMixin
 
 import slot.db_fieldbook as db
-import models
+from . import models
 
 
 def convert_user_dict_to_user_instance(user_dict):
