@@ -1,6 +1,6 @@
 from twilio.rest import TwilioRestClient
 from rq import Queue
-from run_worker_all import conn as qconn
+from .run_worker_all import conn as qconn
 
 import config
 from slot import db_fieldbook as fieldbook

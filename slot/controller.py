@@ -3,13 +3,13 @@ import datetime
 import os
 
 from rq import Queue
-from run_worker_all import conn as qconn
+from .run_worker_all import conn as qconn
 
 from slot import db_fieldbook
 from flask import request, redirect, render_template, json
 
 import config
-import utils
+from . import utils
 from slot.main import app
 from slot import messaging
 

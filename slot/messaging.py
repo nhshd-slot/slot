@@ -4,10 +4,10 @@ from random import shuffle
 
 from rq import Queue
 
-from run_worker_all import conn as qconn
-import db_fieldbook as fieldbook, sms_creator
-from sms_twilio import send_sms
-from utils import mobile_number_string_to_int
+from .run_worker_all import conn as qconn
+from . import db_fieldbook as fieldbook, sms_creator
+from .sms_twilio import send_sms
+from .utils import mobile_number_string_to_int
 
 # Get a logger
 logger = logging.getLogger('slot')
