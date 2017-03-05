@@ -6,4 +6,4 @@ services:
 install: "pip install -r requirements.txt"
 env:
 - INSTANCE_NAME=slot-ci
-script: "nosetests -q -s tests/test_users.py:TestUsers"
+script: "cd tests/ && nosetests test_canary:TestCanary"
