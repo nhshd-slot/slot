@@ -4,4 +4,4 @@ python:
 install: "pip install -r requirements.txt"
 env:
 - INSTANCE_NAME=slot-ci
-script: exit0.sh
+script: "nosetests -q -s tests/test_users.py:TestUsers"
