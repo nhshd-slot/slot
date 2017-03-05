@@ -23,3 +23,9 @@ var/
 .installed.cfg
 *.egg
 *.pyc
+__pycache__/
+
+# Unversioned Files
+slot/__pycache__/
+slot/users/__pycache__/
+tests/__pycache__/
