@@ -2,7 +2,6 @@ import datetime
 import logging
 
 import fieldbook_py
-import requests
 
 import config
 import slot.utils as utils
@@ -97,10 +96,6 @@ def get_opportunity(opportunity_id):
     result = fb.get_row('opportunities',
                         opportunity_id)
 
-    # url = str.format('{0}/{1}/{2}', config.fieldbook_url, 'opportunities', opportunity_id)
-    # print(url)
-    # request = requests.get(url, auth=(config.fieldbook_user, config.fieldbook_pass))
-    # print(request.json())
     return result
 
 
@@ -108,12 +103,12 @@ def get_offer(opportunity_id):
     """Returns a dictionary representing an offer with a matching ID"""
     try:
         logger.debug('Checking status of opportunity {0}'.format(opportunity_id))
-        requests = fb.get_all_rows('offers',
+        offer = fb.get_all_rows('offers',
                                   opportunity_id=opportunity_id)
-        logger.debug('Opportunity Status: {0}'.format(requests))
+        logger.debug('Opportunity Status: {0}'.format(offer))
 
-        if len(requests) > 0:
-            offer = requests[0]
+        if len(offer) > 0:
+            offer = offer[0]
             logger.debug("Found offer with status {0}".format(offer['status']))
             return offer
         else:
