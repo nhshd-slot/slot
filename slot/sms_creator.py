@@ -1,3 +1,7 @@
+import logging
+log = logging.getLogger('slot')
+
+
 def new_procedure_message(procedure, location, expiry_time, doctor, message_ref):
     message = str.format("{0} at {1}.\nAttend by {2}.\nAsk for {3}.\n\nTo accept reply '{4}'",
                          procedure,
@@ -5,7 +9,7 @@ def new_procedure_message(procedure, location, expiry_time, doctor, message_ref)
                          expiry_time,
                          doctor,
                          message_ref)
-    print(message)
+    log_message(message)
     return message
 
 
@@ -16,12 +20,15 @@ def success_response_message(procedure, location, duration, doctor):
                          location,
                          duration,
                          doctor)
-    print(message)
+    log_message(message)
     return message
 
 
 def not_successful_response_message():
     message = str.format("Sorry - procedure already taken this time.")
-
-    print(message)
+    log_message(message)
     return message
+
+
+def log_message(message):
+    log.debug("Generated message:\n {0}".format(message))
