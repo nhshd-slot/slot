@@ -53,7 +53,7 @@ def get_procedures():
 
 
 @cache.cached(key_prefix='all_students')
-def get_students():
+def get_active_students():
     return [s for s in get_sheet_all_records('students') if s['active'] == 'true']
 
 
