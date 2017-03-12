@@ -1,0 +1,18 @@
+version: '3'
+services:
+  redis:
+    image: "redis:alpine"
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile-web
+    ports:
+     - "5000:5000"
+    volumes:
+     - .:/slot
+  worker:
+    build:
+      context: .
+      dockerfile: Dockerfile-worker
+    volumes:
+     - ..:/slot

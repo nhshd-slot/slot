@@ -1,0 +1,13 @@
+FROM python:3.6-alpine
+
+ADD . /code
+WORKDIR /code
+
+RUN pip install --upgrade pip
+RUN pip install -r requirements.txt
+
+ENV REDIS_URL redis://redis:6379
+ENV CACHE_REDIS_URL redis://redis:6379
+
+# CMD ["gunicorn", "--workers=2", "--bind=0.0.0.0:5000", "slot:app"]
+CMD ["python", "run.py"]
