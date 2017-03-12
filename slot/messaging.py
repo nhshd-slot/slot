@@ -23,18 +23,20 @@ list_of_opportunities = []
 
 # Takes a list and returns it with the items in a different order
 def shuffle_list(list_to_shuffle):
-    new_list = random.sample(list_to_shuffle, len(list_to_shuffle))
 
-    while new_list == list_to_shuffle:
-        new_list = random.sample(list_to_shuffle, len(list_to_shuffle))
+    logger.debug("Shuffling list")
+    new_list = random.sample(list_to_shuffle, len(list_to_shuffle))
 
     return new_list
 
 
 # Gets a list of active students from the database, randomises the order, and returns the list of students
 def get_active_students_shuffled():
+    logger.debug("Retrieving Student List")
     students = fieldbook.get_active_students()
+    logger.debug("Students list: {0}".format(students))
     recipient_list = shuffle_list(students)
+    logger.debug("Shuffled students list: {0}".format(recipient_list))
     return recipient_list
 
 
@@ -43,7 +45,11 @@ def broadcast_procedure(procedure, location, doctor, ref_id, expiry_time):
     print(str.format("Ref is {0}", ref_id))
     message = sms_creator.new_procedure_message(procedure, location, expiry_time, doctor, response_code)
 
+    logger.debug("Getting active students in random order")
+
     recipients = get_active_students_shuffled()
+
+    logger.debug("Students: {0}".format(recipients))
 
     # Only take the first 50 students from the list to reduce the sample size for each offer
     # recipients = recipients[:50]
