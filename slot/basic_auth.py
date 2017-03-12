@@ -9,7 +9,7 @@ def check_auth(username, password):
     """This function is called to check if a username /
     password combination is valid.
     """
-    return username == config.basic_auth_user and password == config.basic_auth_pass
+    return username == config.BASIC_AUTH_USER and password == config.BASIC_AUTH_PASS
 
 
 def authenticate():

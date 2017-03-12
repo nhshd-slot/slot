@@ -13,9 +13,9 @@ logger = logging.getLogger('slot')
 
 # Create an instance of a FieldbookClient using fieldbook_py
 fb = fieldbook_py.FieldbookClient(
-        config.fieldbook_user,
-        config.fieldbook_pass,
-        config.fieldbook_url)
+        config.FIELDBOOK_USER,
+        config.FIELDBOOK_PASS,
+        config.FIELDBOOK_URL)
 
 
 def get_sheet_all_records(sheet):

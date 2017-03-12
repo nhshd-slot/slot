@@ -7,18 +7,18 @@ except ImportError:
 
     INSTANCE_NAME = os.environ.get('INSTANCE_NAME', '')
 
-    twilio_sid = os.environ.get('TWILIO_SID', '')
-    twilio_token = os.environ.get('TWILIO_TOKEN', '')
-    twilio_number = os.environ.get('TWILIO_NUMBER', '')
+    TWILIO_SID = os.environ.get('TWILIO_SID', '')
+    TWILIO_TOKEN = os.environ.get('TWILIO_TOKEN', '')
+    TWILIO_NUMBER = os.environ.get('TWILIO_NUMBER', '')
 
-    fieldbook_user = os.environ.get('FIELDBOOK_USER', '')
-    fieldbook_pass = os.environ.get('FIELDBOOK_PASS', '')
-    fieldbook_url = os.environ.get('FIELDBOOK_URL', '')
+    FIELDBOOK_USER = os.environ.get('FIELDBOOK_USER', '')
+    FIELDBOOK_PASS = os.environ.get('FIELDBOOK_PASS', '')
+    FIELDBOOK_URL = os.environ.get('FIELDBOOK_URL', '')
 
-    basic_auth_user = os.environ.get('BASIC_AUTH_USER', 'user')
-    basic_auth_pass = os.environ.get('BASIC_AUTH_PASS', 'pass')
+    BASIC_AUTH_USER = os.environ.get('BASIC_AUTH_USER', 'user')
+    BASIC_AUTH_PASS = os.environ.get('BASIC_AUTH_PASS', 'pass')
 
-    dash_refresh_timeout = int(os.environ.get('DASH_REFRESH_TIMEOUT', 60))
+    DASH_REFRESH_TIMEOUT = int(os.environ.get('DASH_REFRESH_TIMEOUT', 60))
 
     SECRET_KEY = os.environ.get('SECRET_KEY', 'secret_key')
     SESSION_COOKIE_NAME = os.environ.get('SESSION_COOKIE_NAME', 'slot-session')
@@ -38,4 +38,4 @@ except ImportError:
     # We need the following variables to be boolean so we just check for a value against the environment variable
     # to mean True and then take absence of either a value or the variable to mean False
 
-    debug_mode = bool(os.environ.get('DEBUG_MODE', False))
+    DEBUG_MODE = bool(os.environ.get('DEBUG_MODE', False))

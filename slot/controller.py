@@ -36,7 +36,7 @@ def dashboard():
         op["remaining_mins"] = int(int(op["expiry_time"] - utils.timestamp_to_ticks(datetime.datetime.utcnow())) / 60)
     return render_template('dashboard.html',
                            ops=ops,
-                           dash_refresh_timeout=config.dash_refresh_timeout,
+                           dash_refresh_timeout=config.DASH_REFRESH_TIMEOUT,
                            instance_name=config.INSTANCE_NAME)
 
 
@@ -157,7 +157,7 @@ def complete_procedure():
 
 
 if __name__ == '__main__':
-    app.debug = config.debug_mode
+    app.debug = config.DEBUG_MODE
     port = int(os.environ.get("PORT", 5000))
     print(str.format("Debug Mode is: {0}", app.debug))
     app.run(

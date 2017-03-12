@@ -5,7 +5,7 @@ from .run_worker_all import conn as qconn
 import config
 from slot import db_fieldbook as fieldbook
 
-client = TwilioRestClient(config.twilio_sid, config.twilio_token)
+client = TwilioRestClient(config.TWILIO_SID, config.TWILIO_TOKEN)
 
 # Set up RQ queue to add background tasks to
 q_db = Queue('db', connection=qconn)
@@ -15,10 +15,10 @@ def send_sms(sms_to, sms_body):
     try:
         print("Sending SMS to Twilio API")
 
-        client.messages.create(to=sms_to, from_=config.twilio_number, body=sms_body)
+        client.messages.create(to=sms_to, from_=config.TWILIO_NUMBER, body=sms_body)
 
         q_db.enqueue(fieldbook.add_sms_log,
-                     config.twilio_number,
+                     config.TWILIO_NUMBER,
                      sms_to,
                      sms_body,
                      "OUT")
