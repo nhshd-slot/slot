@@ -20,7 +20,6 @@ pytz==2016.10
 redis==2.10.5
 requests==2.13.0
 rq==0.7.1
-six==1.10.0
 twilio==5.7.0
 Werkzeug==0.11.15
 WTForms==2.1
